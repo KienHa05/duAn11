@@ -25,6 +25,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Hình ảnh</th>
                             <th>Tên sản phẩm</th>
                             <th>Giá</th>
                             <th>Tồn kho</th>
@@ -36,6 +37,21 @@
                         @forelse($products as $product)
                             <tr>
                                 <td>{{ $product->id }}</td>
+                                <td>
+                                    @if($product->image)
+                                        <div class="avatar">
+                                            <div class="w-12 h-12 rounded">
+                                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="avatar placeholder">
+                                            <div class="w-12 h-12 bg-base-300 text-base-content rounded">
+                                                <x-heroicon-o-photo class="w-6 h-6" />
+                                            </div>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ number_format($product->price) }} VND</td>
                                 <td>{{ $product->stock }}</td>
@@ -60,7 +76,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">No products found.</td>
+                                <td colspan="7" class="text-center py-4">No products found.</td>
                             </tr>
                         @endforelse
                     </tbody>

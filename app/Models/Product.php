@@ -11,13 +11,25 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'price',
+        'size',
+        'color',
         'stock',
         'category_id',
+        'image',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the product's image URL
+     */
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/products/' . $this->image) : asset('storage/products/placeholder.png');
     }
 }

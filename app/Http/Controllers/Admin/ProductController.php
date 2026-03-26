@@ -23,16 +23,28 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'size' => 'nullable|string|max:10',
+            'color' => 'nullable|string|max:50',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Product::create($request->all());
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('products', $imageName, 'public');
+            $validated['image'] = $imageName;
+        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được tạo!');
+        Product::create($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được tạo thành công!');
     }
 
     public function show(Product $product)
@@ -48,16 +60,33 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'size' => 'nullable|string|max:10',
+            'color' => 'nullable|string|max:50',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $product->update($request->all());
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && \Storage::disk('public')->exists('products/' . $product->image)) {
+                \Storage::disk('public')->delete('products/' . $product->image);
+            }
 
-        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được cập nhật!');
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('products', $imageName, 'public');
+            $validated['image'] = $imageName;
+        }
+
+        $product->update($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được cập nhật thành công!');
     }
 
     public function destroy(Product $product)
