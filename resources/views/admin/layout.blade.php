@@ -26,6 +26,7 @@
 
             <!-- Main Content -->
             <main class="flex-1 p-6">
+                <x-notification />
                 @yield('content')
             </main>
         </div>
@@ -33,22 +34,50 @@
         <!-- Sidebar -->
         <div class="drawer-side">
             <label for="drawer-toggle" class="drawer-overlay"></label>
-            <aside class="min-h-full w-80 bg-base-100 text-base-content">
-                <div class="p-4">
-                    <h2 class="text-2xl font-bold text-primary">The Notorious</h2>
-                    <p class="text-sm opacity-70">Admin Panel</p>
+            <aside class="min-h-full w-80 bg-base-100 text-base-content border-r border-base-200">
+                <div class="p-5 sticky top-0 bg-base-100 z-10 border-b border-base-200">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar placeholder">
+                            <div class="w-10 rounded-lg bg-primary text-primary-content">
+                                <span class="font-bold">TN</span>
+                            </div>
+                        </div>
+                        <div class="min-w-0">
+                            <h2 class="text-lg font-bold leading-tight">The Notorious</h2>
+                            <p class="text-xs opacity-70 truncate">Admin Dashboard</p>
+                        </div>
+                    </div>
                 </div>
-                <ul class="menu p-4 w-full">
-                    <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <x-heroicon-o-squares-2x2 class="w-5 h-5" /> Bảng điều khiển
-                    </a></li>
-                    <li><a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                        <x-heroicon-o-square-3-stack-3d class="w-5 h-5" /> Sản phẩm
-                    </a></li>
-                    <li><a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                        <x-heroicon-o-tag class="w-5 h-5" /> Danh mục
-                    </a></li>
-                </ul>
+
+                <div class="p-4">
+                    <ul class="menu menu-md gap-1">
+                        <li>
+                            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                                <x-heroicon-o-squares-2x2 class="w-5 h-5" />
+                                <span>Bảng điều khiển</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                                <x-heroicon-o-square-3-stack-3d class="w-5 h-5" />
+                                <span>Sản phẩm</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                                <x-heroicon-o-tag class="w-5 h-5" />
+                                <span>Danh mục</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="divider my-4"></div>
+
+                    <a href="{{ route('home') }}" class="btn btn-ghost w-full justify-start gap-2">
+                        <x-heroicon-o-home class="w-5 h-5" />
+                        Về trang chủ
+                    </a>
+                </div>
             </aside>
         </div>
     </div>

@@ -1,98 +1,444 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="corporate">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin - The Notorious')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --sidebar-width: 280px;
+            --sidebar-bg: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 20px 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.collapsed {
+            margin-left: calc(-1 * var(--sidebar-width));
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-brand:hover {
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--primary-color);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 999;
+            transition: left 0.3s ease;
+        }
+
+        .top-navbar.full-width {
+            left: 0;
+        }
+
+        .navbar-start {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .toggle-btn:hover {
+            color: #667eea;
+        }
+
+        .navbar-brand-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--sidebar-bg);
+        }
+
+        .navbar-end {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 70px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+            min-height: calc(100vh - 70px);
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--sidebar-bg);
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 15px 20px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        /* Table Styles */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: var(--sidebar-bg);
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5568d3;
+            border-color: #5568d3;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+        }
+
+        /* Forms */
+        .form-control,
+        .form-select {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--sidebar-bg);
+            margin-bottom: 8px;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 6px;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        /* Pagination */
+        .pagination {
+            gap: 5px;
+        }
+
+        .page-link {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            color: var(--primary-color);
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .page-link.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 220px;
+            }
+
+            .navbar-end {
+                gap: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-base-200">
-    <div class="drawer">
-        <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
-            <!-- Navbar -->
-            <div class="navbar bg-base-100 shadow-lg">
-                <div class="navbar-start">
-                    <label for="drawer-toggle" class="btn btn-ghost btn-circle drawer-button">
-                        <i class="fas fa-bars"></i>
-                    </label>
-                    <a class="btn btn-ghost normal-case text-xl font-bold">Admin Dashboard</a>
-                </div>
-                <div class="navbar-end">
-                    <div class="dropdown dropdown-end">
-                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                            <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">A</div>
-                        </label>
-                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a>Profile</a></li>
-                            <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="p-6">
-                @if(session('success'))
-                    <div class="alert alert-success shadow-lg mb-4">
-                        <i class="fas fa-check-circle"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if($errors->any())
-                    <div class="alert alert-error shadow-lg mb-4">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <div>
-                            <strong>Có lỗi xảy ra!</strong>
-                            <ul class="mt-2">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                @endif
-
-                @yield('content')
-            </div>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ route('admin.products.index') }}" class="sidebar-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>The Notorious</span>
+            </a>
         </div>
 
-        <div class="drawer-side">
-            <label for="drawer-toggle" class="drawer-overlay"></label>
-            <aside class="min-h-full w-80 bg-base-100 text-base-content border-r">
-                <div class="p-4">
-                    <a href="{{ route('admin.products.index') }}" class="btn btn-ghost normal-case text-xl font-bold mb-4">
-                        <i class="fas fa-shield-alt mr-2"></i>
-                        The Notorious
-                    </a>
-                </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{{ route('admin.products.index') }}"
+                   class="@if(Route::currentRouteName() == 'admin.products.index') active @endif">
+                    <i class="fas fa-list"></i>
+                    <span>Danh sách sản phẩm</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.products.create') }}"
+                   class="@if(Route::currentRouteName() == 'admin.products.create') active @endif">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Thêm sản phẩm</span>
+                </a>
+            </li>
+            <li style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <a href="/">
+                    <i class="fas fa-home"></i>
+                    <span>Về trang chủ</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-                <ul class="menu p-4 w-full text-base-content">
-                    <li>
-                        <a href="{{ route('admin.products.index') }}" class="@if(Route::currentRouteName() == 'admin.products.index') active @endif">
-                            <i class="fas fa-list"></i>
-                            Danh sách sản phẩm
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.products.create') }}" class="@if(Route::currentRouteName() == 'admin.products.create') active @endif">
-                            <i class="fas fa-plus-circle"></i>
-                            Thêm sản phẩm
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="/">
-                            <i class="fas fa-home"></i>
-                            Về trang chủ
-                        </a>
-                    </li>
+    <!-- Top Navbar -->
+    <nav class="top-navbar" id="topNavbar">
+        <div class="navbar-start">
+            <button class="toggle-btn" id="toggleSidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="navbar-brand-text">Admin Dashboard</span>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-user">
+                <div class="user-avatar">A</div>
+                <div>
+                    <div style="font-size: 0.9rem; font-weight: 600;">Admin</div>
+                    <div style="font-size: 0.8rem; color: #999;">Quản trị viên</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Có lỗi xảy ra!</strong>
+                <ul class="mb-0 mt-2">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
                 </ul>
-            </aside>
-        </div>
-    </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @yield('content')
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const topNavbar = document.getElementById('topNavbar');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            topNavbar.classList.toggle('full-width');
+            mainContent.classList.toggle('full-width');
+        });
+
+        // Set active menu item based on current URL
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            if (link.href === window.location.href) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -17,6 +17,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('dashboard');
+    
     Route::resource('products', AdminProductController::class);
+    
+    // Product restore and force delete routes
+    Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
+    Route::delete('/products/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('products.force-delete');
+    
     Route::resource('categories', AdminCategoryController::class);
 });

@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::withoutTrashed()->with('category');
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -31,6 +31,11 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        // Make sure product is not deleted
+        if ($product->trashed()) {
+            abort(404);
+        }
+        
         $product->load('category');
         return view('client.products.show', compact('product'));
     }
