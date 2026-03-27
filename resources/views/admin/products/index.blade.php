@@ -11,13 +11,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success mb-4">
-            <x-heroicon-o-check-circle class="w-5 h-5" />
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="card bg-base-100">
         <div class="card-body">
             <div class="overflow-x-auto">
