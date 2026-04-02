@@ -73,7 +73,7 @@
                                 <label class="label">
                                     <span class="label-text font-semibold">Giá (₫) <span class="text-error">*</span></span>
                                 </label>
-                                <input type="number" name="price" placeholder="0" min="0"
+                                <input type="number" name="price" placeholder="0" min="0" step="1000"
                                     class="input input-bordered focus:input-primary text-base @error('price') input-error @enderror" 
                                     value="{{ old('price', $product->price) }}" required>
                                 @error('price')

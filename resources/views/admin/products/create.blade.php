@@ -16,11 +16,11 @@
     </div>
 
     <!-- Main Form Grid -->
-    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" id="productForm">
-        @csrf
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left Column - Main Form (2/3) -->
-            <div class="lg:col-span-2 space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column - Main Form (2/3) -->
+        <div class="lg:col-span-2 space-y-6">
+            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" id="productForm" class="space-y-6">
+                @csrf
 
                 <!-- Basic Information Card -->
                 <div class="card bg-base-100 shadow-md">
@@ -72,7 +72,7 @@
                                 <label class="label">
                                     <span class="label-text font-semibold">Giá (₫) <span class="text-error">*</span></span>
                                 </label>
-                                <input type="number" name="price" placeholder="0" min="0"
+                                <input type="number" name="price" placeholder="0" min="0" step="1000"
                                     class="input input-bordered focus:input-primary text-base @error('price') input-error @enderror" 
                                     value="{{ old('price') }}" required>
                                 @error('price')
@@ -143,7 +143,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
+        </div>
 
         <!-- Right Sidebar (1/3) -->
         <div class="space-y-6">
@@ -232,9 +233,8 @@
                     <x-heroicon-o-arrow-left class="w-6 h-6" /> Hủy
                 </a>
             </div>
-            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <script>
