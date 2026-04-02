@@ -51,18 +51,39 @@
 
                 <div class="p-4">
                     <ul class="menu menu-md gap-1">
+                        <!-- Dashboard -->
                         <li>
                             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                                 <x-heroicon-o-squares-2x2 class="w-5 h-5" />
                                 <span>Bảng điều khiển</span>
                             </a>
                         </li>
+
+                        <!-- Products Management -->
                         <li>
-                            <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                                <x-heroicon-o-square-3-stack-3d class="w-5 h-5" />
-                                <span>Sản phẩm</span>
-                            </a>
+                            <details class="{{ request()->routeIs('admin.products.*') ? 'open' : '' }}">
+                                <summary class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                                    <x-heroicon-o-square-3-stack-3d class="w-5 h-5" />
+                                    <span>Quản lý sản phẩm</span>
+                                </summary>
+                                <ul class="bg-base-200 rounded-lg mt-1">
+                                    <li>
+                                        <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.index') ? 'active' : '' }}">
+                                            <x-heroicon-o-list-bullet class="w-4 h-4" />
+                                            <span>Danh sách sản phẩm</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('admin.products.create') }}" class="{{ request()->routeIs('admin.products.create') ? 'active' : '' }}">
+                                            <x-heroicon-o-plus-circle class="w-4 h-4" />
+                                            <span>Thêm sản phẩm mới</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </details>
                         </li>
+
+                        <!-- Categories -->
                         <li>
                             <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                                 <x-heroicon-o-tag class="w-5 h-5" />

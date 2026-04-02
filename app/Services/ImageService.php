@@ -11,7 +11,7 @@ class ImageService
 {
     /**
      * Process and store product image
-     * 
+     *
      * @param UploadedFile $file
      * @param string|null $oldImage
      * @return string|null
@@ -27,20 +27,18 @@ class ImageService
             // Always store as WebP to match encoded output
             $fileName = time() . '_' . uniqid() . '.webp';
             $filePath = 'products/' . $fileName;
-            
+
             // Read the image file
-            $driver = extension_loaded('imagick') ? 'imagick' : 'gd';
-            // Intervention Image v3 constructor expects driver + options (not an associative config array)
-            $manager = new ImageManager($driver);
+            $manager = extension_loaded('imagick') ? ImageManager::imagick() : ImageManager::gd();
             $image = $manager->read($file->getRealPath());
-            
+
             // Resize image to 800x600 (maintain aspect ratio)
             $image->scale(800, 600);
-            
+
             // Save to storage
             $webp = $image->toWebp(80);
             Storage::disk('public')->put($filePath, (string) $webp);
-            
+
             return $fileName;
         } catch (\Exception $e) {
             Log::error('Image processing error: ' . $e->getMessage());
@@ -50,7 +48,7 @@ class ImageService
 
     /**
      * Delete product image
-     * 
+     *
      * @param string|null $image
      * @return bool
      */
@@ -64,7 +62,7 @@ class ImageService
 
     /**
      * Get image URL with cache busting
-     * 
+     *
      * @param string|null $image
      * @return string
      */
