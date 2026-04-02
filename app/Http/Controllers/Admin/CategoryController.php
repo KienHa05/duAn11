@@ -32,7 +32,9 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return view('admin.categories.show', compact('category'));
+        $products = $category->products()->paginate(10);
+        $totalProducts = $category->products()->count();
+        return view('admin.categories.show', compact('category', 'products', 'totalProducts'));
     }
 
     public function edit(Category $category)
