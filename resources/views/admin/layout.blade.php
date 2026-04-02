@@ -87,7 +87,7 @@
                         <li>
                             <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                                 <x-heroicon-o-tag class="w-5 h-5" />
-                                <span>Danh mục</span>
+                                <span>Quản Lý Danh mục</span>
                             </a>
                         </li>
                     </ul>
