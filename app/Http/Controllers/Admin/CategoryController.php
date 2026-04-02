@@ -50,7 +50,7 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        return redirect()->route('admin.categories.index')->with('success', 'Danh mục đã được cập nhật!');
+        return redirect()->route('admin.categories.show', $category)->with('success', 'Danh mục đã được cập nhật!');
     }
 
     public function destroy(Category $category)
