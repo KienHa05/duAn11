@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
-@section('title', 'Bảng điều khiển')
+@section('title', 'Tổng Quan')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-4xl font-bold">Bảng điều khiển</h1>
+            <h1 class="text-4xl font-bold">Tổng Quan</h1>
             <p class="text-sm text-base-content/60 mt-1">Quản lý cửa hàng thương mại điện tử hiệu quả</p>
         </div>
         <div class="text-right">

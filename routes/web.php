@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 Route::get('/', [ClientProductController::class, 'index'])->name('home');
@@ -25,4 +26,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('/products/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('products.force-delete');
     
     Route::resource('categories', AdminCategoryController::class);
+    
+    // Order routes
+    Route::resource('orders', AdminOrderController::class, ['only' => ['index', 'show', 'edit', 'update']]);
+    Route::post('/orders/{order}/shipment', [AdminOrderController::class, 'updateShipment'])->name('orders.shipment');
+    Route::post('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
 });
