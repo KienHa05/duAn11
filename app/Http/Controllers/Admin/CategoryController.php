@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = Category::withCount('products')->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -32,7 +32,9 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return view('admin.categories.show', compact('category'));
+        $products = $category->products()->paginate(10);
+        $totalProducts = $category->products()->count();
+        return view('admin.categories.show', compact('category', 'products', 'totalProducts'));
     }
 
     public function edit(Category $category)
@@ -48,7 +50,7 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        return redirect()->route('admin.categories.index')->with('success', 'Danh mục đã được cập nhật!');
+        return redirect()->route('admin.categories.show', $category)->with('success', 'Danh mục đã được cập nhật!');
     }
 
     public function destroy(Category $category)

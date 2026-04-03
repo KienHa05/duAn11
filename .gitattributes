@@ -1,11 +1,39 @@
+# Normalize text files to LF
 * text=auto eol=lf
 
+# Laravel diff settings
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html
 *.md diff=markdown
 *.php diff=php
 
+# CRLF warning
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.env text eol=lf
+*.sh text eol=lf
+
+# Windows scripts (giữ CRLF)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files (tránh bị convert)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.mp4 binary
+
+# Export ignore
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
