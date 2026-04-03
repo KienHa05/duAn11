@@ -8,7 +8,7 @@
 *.md diff=markdown
 *.php diff=php
 
-# 🔥 BỔ SUNG để fix triệt để CRLF warning
+# CRLF warning
 *.js text eol=lf
 *.ts text eol=lf
 *.json text eol=lf
