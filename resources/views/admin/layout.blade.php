@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Bảng điều khiển Admin') - The Notorious</title>
+    <title>@yield('title', 'Tổng Quan Admin') - The Notorious</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -20,7 +20,7 @@
                     </label>
                 </div>
                 <div class="flex-1">
-                    <h1 class="text-xl font-bold">Bảng điều khiển Admin</h1>
+                    <h1 class="text-xl font-bold">Tổng Quan Admin</h1>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@
                         <li>
                             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                                 <x-heroicon-o-squares-2x2 class="w-5 h-5" />
-                                <span>Bảng điều khiển</span>
+                                <span>Tổng Quan</span>
                             </a>
                         </li>
 
@@ -87,9 +87,18 @@
                         <li>
                             <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                                 <x-heroicon-o-tag class="w-5 h-5" />
-                                <span>Danh mục</span>
+                                <span>Quản Lý Danh mục</span>
                             </a>
                         </li>
+
+                        <!-- Orders -->
+                        <li>
+                            <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                                <x-heroicon-o-shopping-bag class="w-5 h-5" />
+                                <span>Quản Lý Đơn Hàng</span>
+                            </a>
+                        </li>
+
                     </ul>
 
                     <div class="divider my-4"></div>
