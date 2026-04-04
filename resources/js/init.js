@@ -1,9 +1,14 @@
 /**
  * Initialization script
- * Sets up Swiper slider, Alpine.js components, and event listeners
+ * Sets up Swiper slider, Alpine.js components, animations, and event listeners
  */
 
+import AOS from 'aos';
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS (Animate On Scroll)
+    initAnimations();
+    
     // Initialize Banner Swiper
     initBannerSwiper();
     
@@ -13,6 +18,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup Event Listeners
     setupEventListeners();
 });
+
+/**
+ * Initialize AOS Animations
+ */
+function initAnimations() {
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true,
+        offset: 50
+    });
+}
 
 /**
  * Initialize Banner Swiper
@@ -76,10 +93,10 @@ function setupEventListeners() {
         const cartCountBadge = document.querySelector('header button[data-cart-count]');
         if (cartCountBadge && e.detail.cartCount > 0) {
             cartCountBadge.innerHTML = `
-                <svg class="w-6 h-6 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m10 0h2m-2 0h-2.5m0 0a1 1 0 11-2 0 1 1 0 012 0zM14 13h2m0 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                <svg class="w-6 h-6 group-hover:text-secondary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
-                <span class="absolute top-0 right-0 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span class="absolute top-1 right-1 w-5 h-5 bg-secondary text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
                     ${e.detail.cartCount}
                 </span>
             `;
@@ -131,4 +148,4 @@ window.smoothScroll = function(selector) {
 /**
  * Log initialization complete
  */
-console.log('The Notorious - E-Commerce Platform Initialized');
+console.log('%c🚀 The Notorious - E-Commerce Platform Initialized', 'color: #3b82f6; font-size: 14px; font-weight: bold;');

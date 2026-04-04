@@ -1,78 +1,123 @@
-<!-- Banner Slider Component -->
-<section class="banner-slider-section mb-12">
-    <!-- Swiper Banner -->
-    <div class="swiper bannerSwiper w-full h-64 sm:h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
+<!-- Modern Banner Slider - Cinematic Style -->
+<section class="banner-slider-section mb-16">
+    <div class="swiper bannerSwiper w-full h-72 sm:h-80 md:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
         <div class="swiper-wrapper">
-            <!-- Slide 1 -->
+            <!-- Slide 1 - Summer Collection -->
             <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-r from-primary/80 to-secondary/80 flex items-center justify-center overflow-hidden group">
-                    <div class="absolute inset-0 opacity-20">
-                        <img src="data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" class="w-full h-full" alt="">
+                <div class="relative w-full h-full bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center overflow-hidden group">
+                    <!-- Background Pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute inset-0" style="background-image: linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff); background-size: 60px 60px; background-position: 0 0, 30px 30px;"></div>
                     </div>
-                    <div class="relative z-10 text-center text-white px-6">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 animate-pulse">Bộ Sưu Tập Hè 2026</h2>
-                        <p class="text-sm sm:text-base md:text-lg mb-6 opacity-90">Khám phá những thiết kế mới nhất với chất lượng premium</p>
-                        <a href="#products" class="btn btn-light gap-2 shadow-lg hover:shadow-xl transform transition-transform hover:scale-105">
-                            <span class="font-semibold">Xem ngay</span>
+                    
+                    <!-- Content -->
+                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
+                        <div class="mb-4 inline-block">
+                            <span class="inline-block px-4 py-2 bg-yellow-500/20 text-yellow-300 text-xs font-bold uppercase tracking-widest rounded-full border border-yellow-500/30 backdrop-blur-sm">
+                                Bộ sưu tập mới
+                            </span>
+                        </div>
+                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight tracking-tighter">
+                            Hè 2026
+                        </h2>
+                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 font-light">
+                            Khám phá những thiết kế tương lai với công nghệ vải tiên tiến
+                        </p>
+                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                            Xem Ngay
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
                         </a>
                     </div>
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                 </div>
             </div>
             
-            <!-- Slide 2 -->
+            <!-- Slide 2 - Sale -->
             <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-r from-accent/80 to-info/80 flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 opacity-10">
-                        <svg viewBox="0 0 100 100" class="w-full h-full" preserveAspectRatio="xMidYMid slice">
+                <div class="relative w-full h-full bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 flex items-center justify-center overflow-hidden">
+                    <!-- Animated Background -->
+                    <div class="absolute inset-0 opacity-20">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
                             <defs>
-                                <pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
                                     <circle cx="10" cy="10" r="2" fill="white"/>
                                 </pattern>
                             </defs>
-                            <rect width="100" height="100" fill="url(#pattern)"/>
+                            <rect width="100" height="100" fill="url(#dots)"/>
                         </svg>
                     </div>
-                    <div class="relative z-10 text-center text-white px-6">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Giảm Giá Lên Đến 50%</h2>
-                        <p class="text-sm sm:text-base md:text-lg mb-6 opacity-90">Các sản phẩm hot được chọn lọc kỹ càng</p>
-                        <a href="#products" class="btn btn-light gap-2 shadow-lg hover:shadow-xl transform transition-transform hover:scale-105">
-                            <span class="font-semibold">Mua ngay</span>
+                    
+                    <!-- Content -->
+                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
+                        <div class="mb-4 inline-block">
+                            <span class="inline-block px-4 py-2 bg-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full border border-white/30 backdrop-blur-sm">
+                                Giảm giá sốc
+                            </span>
+                        </div>
+                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight">
+                            Lên Đến <span class="text-yellow-300">50%</span>
+                        </h2>
+                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-50 font-light">
+                            Những sản phẩm hot được lựa chọn kỹ càng, giảm giá hôm nay
+                        </p>
+                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                            Mua Ngay
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
                         </a>
                     </div>
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                 </div>
             </div>
             
-            <!-- Slide 3 -->
+            <!-- Slide 3 - Welcome -->
             <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-r from-success/80 to-warning/80 flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 opacity-20">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect fill='%23fff' width='20' height='20'/%3E%3Cpath fill='%23f5f5f5' d='M0 0h10v10H0zm10 10h10v10H10z'/%3E%3C/svg%3E" class="w-full h-full" alt="">
+                <div class="relative w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 flex items-center justify-center overflow-hidden">
+                    <!-- Animated Shapes -->
+                    <div class="absolute inset-0 opacity-15">
+                        <div class="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+                        <div class="absolute bottom-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
                     </div>
-                    <div class="relative z-10 text-center text-white px-6">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Thành Viên Mới</h2>
-                        <p class="text-sm sm:text-base md:text-lg mb-6 opacity-90">Nhận ngay ưu đãi 20% cho đơn hàng đầu tiên</p>
-                        <a href="#products" class="btn btn-light gap-2 shadow-lg hover:shadow-xl transform transition-transform hover:scale-105">
-                            <span class="font-semibold">Tham gia ngay</span>
+                    
+                    <!-- Content -->
+                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
+                        <div class="mb-4 inline-block">
+                            <span class="inline-block px-4 py-2 bg-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full border border-white/30 backdrop-blur-sm">
+                                Ưu đãi đặc biệt
+                            </span>
+                        </div>
+                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight">
+                            Thành Viên Mới
+                        </h2>
+                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-50 font-light">
+                            Nhận ngay ưu đãi <span class="font-bold text-yellow-300">20%</span> cho đơn hàng đầu tiên
+                        </p>
+                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                            Tham Gia Ngay
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
                         </a>
                     </div>
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                 </div>
             </div>
         </div>
         
-        <!-- Navigation Buttons -->
-        <div class="swiper-button-prev !left-4 !w-10 !h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full !text-white transition-all"></div>
-        <div class="swiper-button-next !right-4 !w-10 !h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full !text-white transition-all"></div>
+        <!-- Navigation Buttons - Glassmorphism Style -->
+        <div class="swiper-button-prev !w-12 !h-12 !left-6 !text-white bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 !after:text-xl transition-all duration-300"></div>
+        <div class="swiper-button-next !w-12 !h-12 !right-6 !text-white bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 !after:text-xl transition-all duration-300"></div>
         
-        <!-- Pagination -->
-        <div class="swiper-pagination !bottom-4" style="--swiper-pagination-color: white; --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.5);"></div>
+        <!-- Pagination - Customized -->
+        <div class="swiper-pagination !bottom-6" style="--swiper-pagination-color: white; --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.4); --swiper-pagination-bullet-size: 12px; --swiper-pagination-bullet-horizontal-gap: 8px;"></div>
     </div>
 </section>
