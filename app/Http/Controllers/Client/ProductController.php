@@ -25,8 +25,11 @@ class ProductController extends Controller
 
         $products = $query->paginate(12);
         $categories = Category::all();
+        
+        // Get cart count from localStorage (handled by frontend, defaults to 0)
+        $cartCount = 0;
 
-        return view('client.products.index', compact('products', 'categories'));
+        return view('client.home', compact('products', 'categories', 'cartCount'));
     }
 
     public function show(Product $product)
