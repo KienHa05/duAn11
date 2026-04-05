@@ -20,8 +20,8 @@ class ImageService
     {
         try {
             // Delete old image if exists
-            if ($oldImage && Storage::disk('public')->exists('products/' . $oldImage)) {
-                Storage::disk('public')->delete('products/' . $oldImage);
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
             }
 
             // Always store as WebP to match encoded output
@@ -39,7 +39,7 @@ class ImageService
             $webp = $image->toWebp(80);
             Storage::disk('public')->put($filePath, (string) $webp);
 
-            return $fileName;
+            return $filePath;
         } catch (\Exception $e) {
             Log::error('Image processing error: ' . $e->getMessage());
             return null;
@@ -54,8 +54,8 @@ class ImageService
      */
     public static function deleteImage(?string $image): bool
     {
-        if ($image && Storage::disk('public')->exists('products/' . $image)) {
-            return Storage::disk('public')->delete('products/' . $image);
+        if ($image && Storage::disk('public')->exists($image)) {
+            return Storage::disk('public')->delete($image);
         }
         return false;
     }
@@ -68,8 +68,8 @@ class ImageService
      */
     public static function getImageUrl(?string $image): string
     {
-        if ($image && Storage::disk('public')->exists('products/' . $image)) {
-            return asset('storage/products/' . $image) . '?v=' . time();
+        if ($image && Storage::disk('public')->exists($image)) {
+            return Storage::disk('public')->url($image) . '?v=' . time();
         }
         return asset('storage/products/placeholder.png');
     }

@@ -50,7 +50,7 @@
                         <!-- Main Image -->
                         <figure class="aspect-square bg-base-100 flex items-center justify-center relative overflow-hidden">
                             @if($product->image)
-                                <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" id="mainImage">
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" id="mainImage">
                             @else
                                 <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=1000&auto=format&fit=crop" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110">
                             @endif
@@ -140,6 +140,35 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Dynamic Info (Size & Color) -->
+                @if($product->size || $product->color)
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    @if($product->size)
+                    <div class="bg-indigo-50/30 p-4 rounded-xl border border-indigo-100 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-indigo-500">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4H10M4 12V20m0 0h4M4 20H10M20 8V4m0 0h-4M20 4H14M20 12V20m0 0h-4m4 0H14"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-xs text-indigo-400 uppercase tracking-widest font-semibold mb-1">Kích thước</div>
+                            <div class="font-bold text-slate-900">{{ $product->size }}</div>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    @if($product->color)
+                    <div class="bg-rose-50/30 p-4 rounded-xl border border-rose-100 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-500">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17l.354-.354"></path></svg>
+                        </div>
+                        <div>
+                            <div class="text-xs text-rose-400 uppercase tracking-widest font-semibold mb-1">Màu sắc</div>
+                            <div class="font-bold text-slate-900">{{ $product->color }}</div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                @endif
 
                 <!-- Desktop CTAs & Quantity -->
                 <div class="hidden lg:block space-y-6 mb-10 border-t border-b border-base-200 py-8">
