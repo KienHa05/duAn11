@@ -1,123 +1,109 @@
-<!-- Modern Banner Slider - Cinematic Style -->
-<section class="banner-slider-section mb-16">
-    <div class="swiper bannerSwiper w-full h-72 sm:h-80 md:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+<!-- Apple-Style Minimalist Banner Slider -->
+<section class="banner-slider-container w-full overflow-hidden bg-white">
+    <div class="swiper bannerSwiper w-full h-[400px] sm:h-[500px] md:h-[650px]">
         <div class="swiper-wrapper">
-            <!-- Slide 1 - Summer Collection -->
-            <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center overflow-hidden group">
-                    <!-- Background Pattern -->
-                    <div class="absolute inset-0 opacity-10">
-                        <div class="absolute inset-0" style="background-image: linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff); background-size: 60px 60px; background-position: 0 0, 30px 30px;"></div>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
-                        <div class="mb-4 inline-block">
-                            <span class="inline-block px-4 py-2 bg-yellow-500/20 text-yellow-300 text-xs font-bold uppercase tracking-widest rounded-full border border-yellow-500/30 backdrop-blur-sm">
-                                Bộ sưu tập mới
-                            </span>
-                        </div>
-                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight tracking-tighter">
-                            Hè 2026
+            <!-- Slide 1: High Performance Running -->
+            <div class="swiper-slide relative bg-gray-50 flex items-center justify-center">
+                <div class="absolute inset-0 z-0">
+                    <img 
+                        src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2000" 
+                        alt="Running Performance" 
+                        class="w-full h-full object-cover grayscale-[20%] group-hover:scale-110 transition-transform duration-[10000ms]"
+                    />
+                    <div class="absolute inset-0 bg-black/5"></div>
+                </div>
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center sm:text-left">
+                    <div class="max-w-2xl" data-swiper-parallax="-300">
+                        <span class="inline-block mb-3 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">New Arrival</span>
+                        <h2 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tighter text-black leading-none">
+                            TỐC ĐỘ <br/>VƯỢT TRỘI.
                         </h2>
-                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 font-light">
-                            Khám phá những thiết kế tương lai với công nghệ vải tiên tiến
+                        <p class="text-lg md:text-xl mb-10 text-gray-700 font-medium max-w-lg leading-relaxed">
+                            Trải nghiệm công nghệ đệm khí mới nhất cho những bước chân nhẹ nhàng hơn bao giờ hết.
                         </p>
-                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-                            Xem Ngay
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                            </svg>
-                        </a>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="#products" class="apple-btn apple-btn-black text-center">Mua ngay</a>
+                            <a href="#details" class="apple-btn apple-btn-white text-center">Tìm hiểu thêm</a>
+                        </div>
                     </div>
-                    
-                    <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                 </div>
             </div>
-            
-            <!-- Slide 2 - Sale -->
-            <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 flex items-center justify-center overflow-hidden">
-                    <!-- Animated Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-                            <defs>
-                                <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                                    <circle cx="10" cy="10" r="2" fill="white"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100" height="100" fill="url(#dots)"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
-                        <div class="mb-4 inline-block">
-                            <span class="inline-block px-4 py-2 bg-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full border border-white/30 backdrop-blur-sm">
-                                Giảm giá sốc
-                            </span>
-                        </div>
-                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight">
-                            Lên Đến <span class="text-yellow-300">50%</span>
+
+            <!-- Slide 2: Minimalist Workout Gear -->
+            <div class="swiper-slide relative bg-white flex items-center justify-center">
+                <div class="absolute inset-0 z-0">
+                    <img 
+                        src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2000" 
+                        alt="Workout Motivation" 
+                        class="w-full h-full object-cover scale-x-[-1]"
+                    />
+                    <div class="absolute inset-0 bg-white/20"></div>
+                </div>
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center">
+                    <div data-swiper-parallax="-500">
+                        <h2 class="text-4xl md:text-6xl lg:text-8xl font-black mb-6 tracking-tighter text-black">
+                            SỨC MẠNH <br/>TỪ BÊN TRONG.
                         </h2>
-                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-50 font-light">
-                            Những sản phẩm hot được lựa chọn kỹ càng, giảm giá hôm nay
+                        <p class="text-lg md:text-xl mb-10 text-gray-800 font-medium max-w-xl mx-auto">
+                            Thiết kế tối giản, tập trung tối đa vào hiệu năng luyện tập của bạn.
                         </p>
-                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-                            Mua Ngay
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                            </svg>
-                        </a>
+                        <a href="#products" class="apple-btn apple-btn-black">Bộ sưu tập GYM</a>
                     </div>
-                    
-                    <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                 </div>
             </div>
-            
-            <!-- Slide 3 - Welcome -->
-            <div class="swiper-slide">
-                <div class="relative w-full h-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 flex items-center justify-center overflow-hidden">
-                    <!-- Animated Shapes -->
-                    <div class="absolute inset-0 opacity-15">
-                        <div class="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-                        <div class="absolute bottom-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="relative z-10 text-center text-white px-6 sm:px-12 max-w-2xl">
-                        <div class="mb-4 inline-block">
-                            <span class="inline-block px-4 py-2 bg-white/20 text-white text-xs font-bold uppercase tracking-widest rounded-full border border-white/30 backdrop-blur-sm">
-                                Ưu đãi đặc biệt
-                            </span>
-                        </div>
-                        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight">
-                            Thành Viên Mới
+
+            <!-- Slide 3: Essential Yoga Collection -->
+            <div class="swiper-slide relative bg-gray-100 flex items-center justify-center">
+                <div class="absolute inset-0 z-0">
+                    <img 
+                        src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2000" 
+                        alt="Yoga Collection" 
+                        class="w-full h-full object-cover"
+                    />
+                    <div class="absolute inset-0 bg-gray-200/30"></div>
+                </div>
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center sm:text-right">
+                    <div class="ml-auto max-w-2xl" data-swiper-parallax="-400">
+                        <span class="inline-block mb-3 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Yoga Essentials</span>
+                        <h2 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tighter text-black leading-none">
+                            TĨNH TẠI. <br/>CÂN BẰNG.
                         </h2>
-                        <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-50 font-light">
-                            Nhận ngay ưu đãi <span class="font-bold text-yellow-300">20%</span> cho đơn hàng đầu tiên
+                        <p class="text-lg md:text-xl mb-10 text-gray-700 font-medium max-w-lg ml-auto">
+                            Chất liệu vải siêu mềm mại từ thiên nhiên, đồng hành cùng mọi chuyển động của bạn.
                         </p>
-                        <a href="#products" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-emerald-600 font-bold rounded-lg hover:bg-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-                            Tham Gia Ngay
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                            </svg>
-                        </a>
+                        <a href="#products" class="apple-btn apple-btn-black">Khám phá ngay</a>
                     </div>
-                    
-                    <!-- Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                 </div>
             </div>
         </div>
-        
-        <!-- Navigation Buttons - Glassmorphism Style -->
-        <div class="swiper-button-prev !w-12 !h-12 !left-6 !text-white bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 !after:text-xl transition-all duration-300"></div>
-        <div class="swiper-button-next !w-12 !h-12 !right-6 !text-white bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 !after:text-xl transition-all duration-300"></div>
-        
-        <!-- Pagination - Customized -->
-        <div class="swiper-pagination !bottom-6" style="--swiper-pagination-color: white; --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.4); --swiper-pagination-bullet-size: 12px; --swiper-pagination-bullet-horizontal-gap: 8px;"></div>
+
+        <!-- Navigation Buttons - Elegant Minimalist Style -->
+        <div class="swiper-button-prev !w-12 !h-12 !left-8 !text-black bg-white/40 hover:bg-white border border-gray-200/50 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+        </div>
+        <div class="swiper-button-next !w-12 !h-12 !right-8 !text-black bg-white/40 hover:bg-white border border-gray-200/50 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+        </div>
+
+        <!-- Pagination Dots - Perfectly Sized -->
+        <div class="swiper-pagination !bottom-8" style="--swiper-pagination-color: #000; --swiper-pagination-bullet-inactive-color: #ccc; --swiper-pagination-bullet-size: 10px; --swiper-pagination-bullet-horizontal-gap: 12px; --swiper-pagination-bullet-opacity: 1;"></div>
     </div>
 </section>
+
+<style>
+    /* Swiper customized styles for the Apple look */
+    .bannerSwiper .swiper-pagination-bullet {
+        background: var(--swiper-pagination-bullet-inactive-color);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid transparent;
+    }
+    .bannerSwiper .swiper-pagination-bullet-active {
+        width: 24px;
+        border-radius: 5px;
+        background: #000;
+        border-color: #000;
+    }
+    .bannerSwiper .swiper-button-prev:after, .bannerSwiper .swiper-button-next:after {
+        display: none;
+    }
+</style>
