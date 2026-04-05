@@ -7,6 +7,92 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Smooth transitions */
+* {
+    @apply transition-colors duration-200;
+}
+
+/* Professional typography */
+h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+}
+
+h1 { @apply text-4xl md:text-5xl; }
+h2 { @apply text-3xl md:text-4xl; }
+h3 { @apply text-xl md:text-2xl; }
+
+body {
+    @apply bg-gradient-to-br from-gray-50 to-gray-100;
+}
+
+/* Button enhancements */
+.btn {
+    @apply font-medium transition-all duration-200;
+}
+
+.btn:hover:not(:disabled) {
+    @apply -translate-y-0.5 shadow-md;
+}
+
+/* Card elevation */
+.card, [role="dialog"] {
+    @apply shadow-sm hover:shadow-md transition-shadow;
+}
+
+/* Link hover effect */
+a:not(.btn):not(.badge) {
+    @apply relative transition-colors;
+}
+
+a:not(.btn):not(.badge)::before {
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300;
+    content: '';
+}
+
+a:not(.btn):not(.badge):hover::before {
+    @apply w-full;
+}
+
+/* Premium input styling */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+    @apply bg-white border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all;
+}
+
+/* Image optimization */
+img {
+    @apply rounded-lg;
+}
+
+/* Smooth page transitions */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
 }

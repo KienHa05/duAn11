@@ -15,6 +15,11 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
-        "daisyui": "^5.5.19"
+        "alpinejs": "^3.x.x",
+        "aos": "^2.3.4",
+        "daisyui": "^5.5.19",
+        "gsap": "^3.12.2",
+        "lucide": "^0.404.0",
+        "swiper": "^11.0.0"
     }
 }
