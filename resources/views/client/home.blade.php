@@ -84,8 +84,14 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-6 justify-center">
-        <a href="#about" class="apple-btn bg-white text-black hover:bg-gray-100">Về chúng tôi</a>
-        <a href="#contact" class="apple-btn border border-white text-white hover:bg-white/10">Liên hệ trực tiếp</a>
+        <a href="#about"
+          class="apple-btn bg-white text-black border border-transparent hover:bg-black hover:text-white hover:border-white">
+          Về chúng tôi
+        </a>
+        <a href="#contact"
+          class="apple-btn border border-white text-white hover:bg-white hover:text-black hover:border-black">
+          Liên hệ trực tiếp
+        </a>
       </div>
     </div>
   </section>
