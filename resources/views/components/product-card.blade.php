@@ -71,7 +71,7 @@
                 <!-- Buy Now Button: Compact -->
                 <a 
                     href="{{ route('client.products.show', $product) }}"
-                    class="flex-1 h-9 flex items-center justify-center bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all active:scale-95 cursor-pointer"
+                    class="flex-1 h-10 flex items-center justify-center bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-xl border-2 border-black hover:bg-white hover:text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-0 hover:-translate-y-1 transition-all duration-300 active:scale-95 cursor-pointer"
                     @click.stop
                 >
                     MUA NGAY
