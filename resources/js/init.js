@@ -57,6 +57,7 @@ function initBannerSwiper() {
             prevEl: '.swiper-button-prev',
         },
         parallax: true,
+        grabCursor: true,
         speed: 800,
     });
 }
