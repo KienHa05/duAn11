@@ -11,6 +11,7 @@ window.cartStore = function() {
         shipping: 30000, // Default shipping cost in VND
         total: 0,
         cartCount: 0,
+        isAdding: false, // Track if currently adding to prevent spam
 
         init() {
             this.loadCart();
@@ -24,7 +25,8 @@ window.cartStore = function() {
             const saved = localStorage.getItem('cart');
             if (saved) {
                 this.items = JSON.parse(saved);
-                this.cartCount = this.items.reduce((sum, item) => sum + item.quantity, 0);
+                // Count unique products, not total quantity
+                this.cartCount = this.items.length;
             }
         },
 
@@ -33,19 +35,31 @@ window.cartStore = function() {
          */
         saveCart() {
             localStorage.setItem('cart', JSON.stringify(this.items));
-            this.cartCount = this.items.reduce((sum, item) => sum + item.quantity, 0);
+            // Count unique products, not total quantity
+            this.cartCount = this.items.length;
             this.dispatchCartUpdated();
         },
 
         /**
-         * Add product to cart
+         * Add product to cart (or increase quantity if exists)
+         * Returns: 'added' = new product, 'increased' = existing product quantity increased
          */
         addToCart(productId, name, price, imageUrl = '') {
             const existingItem = this.items.find(item => item.id === productId);
 
             if (existingItem) {
+                // Product exists - increase quantity
                 existingItem.quantity++;
+                this.saveCart();
+                this.updateTotals();
+
+                console.log('⬆️ Increased quantity:', { productId, name, newQuantity: existingItem.quantity });
+
+                // Show toast for quantity increase
+                this.showToast(`Đã tăng số lượng "${name}"`);
+                return 'increased';
             } else {
+                // New product - add to cart
                 this.items.push({
                     id: productId,
                     name: name,
@@ -53,17 +67,38 @@ window.cartStore = function() {
                     imageUrl: imageUrl,
                     quantity: 1
                 });
+
+                this.saveCart();
+                this.updateTotals();
+
+                console.log('✅ Added new product:', { productId, name, price, imageUrl });
+                console.log('📦 Cart:', this.items);
+
+                // Show toast for new product
+                this.showToast(`Đã thêm "${name}" vào giỏ hàng`);
+                return 'added';
+            }
+        },
+
+        /**
+         * Add product to cart with anti-spam protection (for homepage)
+         * Prevents double-click by disabling button during add
+         */
+        addToCartWithLoading(productId, name, price, imageUrl = '') {
+            // Prevent spam clicks
+            if (this.isAdding) {
+                return;
             }
 
-            this.saveCart();
-            this.updateTotals();
+            this.isAdding = true;
 
-            // Debug log
-            console.log('✅ Added to cart:', { productId, name, price, imageUrl });
-            console.log('📦 Cart:', this.items);
+            // Add to cart (handles both new and existing products)
+            this.addToCart(productId, name, price, imageUrl);
 
-            // Show toast notification
-            this.showToast(`Đã thêm "${name}" vào giỏ hàng`);
+            // Re-enable after a short delay
+            setTimeout(() => {
+                this.isAdding = false;
+            }, 300);
         },
 
         /**
@@ -81,28 +116,29 @@ window.cartStore = function() {
         },
 
         /**
-         * Increase product quantity
+         * Increase product quantity (on cart page - doesn't update badge)
          */
         increaseQuantity(productId) {
             const item = this.items.find(i => i.id === productId);
             if (item) {
                 item.quantity++;
-                this.saveCart();
+                // Only save locally, don't dispatch to header
+                localStorage.setItem('cart', JSON.stringify(this.items));
                 this.updateTotals();
             }
         },
 
         /**
-         * Decrease product quantity
+         * Decrease product quantity (on cart page - doesn't update badge)
+         * Minimum quantity is 1
          */
         decreaseQuantity(productId) {
             const item = this.items.find(i => i.id === productId);
             if (item && item.quantity > 1) {
                 item.quantity--;
-                this.saveCart();
+                // Only save locally, don't dispatch to header
+                localStorage.setItem('cart', JSON.stringify(this.items));
                 this.updateTotals();
-            } else if (item && item.quantity === 1) {
-                this.removeFromCart(productId);
             }
         },
 
@@ -152,10 +188,13 @@ window.cartStore = function() {
         showToast(message, type = 'success') {
             // Create toast container with Tailwind styling
             const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-            const icon = type === 'success'
-                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
-                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            let bgColor = 'bg-green-500';
+            let icon = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+
+            if (type === 'error') {
+                bgColor = 'bg-red-500';
+                icon = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            }
 
             toast.className = 'fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-2 fade-in duration-300';
             toast.innerHTML = `
@@ -168,7 +207,7 @@ window.cartStore = function() {
             `;
             document.body.appendChild(toast);
 
-            // Remove toast after 3 seconds with fade out animation
+            // Auto-remove after 3 seconds
             setTimeout(() => {
                 toast.classList.add('animate-out', 'slide-out-to-top-2', 'fade-out');
                 setTimeout(() => {
