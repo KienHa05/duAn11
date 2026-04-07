@@ -40,11 +40,19 @@
         <div x-show="items.length > 0" class="space-y-8">
           <template x-for="(item, index) in items" :key="item.id">
             <div class="flex gap-6 pb-8 border-b border-gray-100 group" x-data="{ item: item }">
-              <!-- Product Image Placeholder -->
+              <!-- Product Image -->
               <div class="w-32 h-32 bg-gray-100 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
+                <template x-if="item.imageUrl && item.imageUrl.trim()">
+                  <img :src="item.imageUrl" :alt="item.name" class="w-full h-full object-cover">
+                </template>
+                <template x-if="!item.imageUrl || !item.imageUrl.trim()">
+                  <div class="flex flex-col items-center justify-center w-full h-full bg-gray-100">
+                    <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-xs text-gray-400 font-medium">Không có ảnh</span>
+                  </div>
+                </template>
               </div>
 
               <!-- Product Details -->

@@ -79,11 +79,15 @@
 
                 <!-- Quick Add to Cart: Smaller Trolley Icon -->
                 <button
-                    @click.stop="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price * (1 - ($product->discount ?? 0) / 100) }})"
+                    @click.stop="addToCart($el.dataset.productId, $el.dataset.productName, parseFloat($el.dataset.price), $el.dataset.imageUrl)"
                     @click="$el.classList.add('scale-90'); setTimeout(() => $el.classList.remove('scale-90'), 200)"
                     :disabled="{{ ($product->stock > 0) ? 'false' : 'true' }}"
                     class="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all transform active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 group/cart cursor-pointer shadow-sm"
                     :title="disabled ? 'Sản phẩm hết hàng' : 'Thêm vào giỏ hàng'"
+                    data-product-id="{{ $product->id }}"
+                    data-product-name="{{ $product->name }}"
+                    data-price="{{ $product->price * (1 - ($product->discount ?? 0) / 100) }}"
+                    data-image-url="{{ $product->image_url }}"
                 >
                     <svg class="w-4 h-4 group-hover/cart:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
