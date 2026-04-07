@@ -40,7 +40,7 @@ window.cartStore = function() {
         /**
          * Add product to cart
          */
-        addToCart(productId, name, price) {
+        addToCart(productId, name, price, imageUrl = '') {
             const existingItem = this.items.find(item => item.id === productId);
 
             if (existingItem) {
@@ -50,12 +50,17 @@ window.cartStore = function() {
                     id: productId,
                     name: name,
                     price: price,
+                    imageUrl: imageUrl,
                     quantity: 1
                 });
             }
 
             this.saveCart();
             this.updateTotals();
+
+            // Debug log
+            console.log('✅ Added to cart:', { productId, name, price, imageUrl });
+            console.log('📦 Cart:', this.items);
 
             // Show toast notification
             this.showToast(`Đã thêm "${name}" vào giỏ hàng`);
