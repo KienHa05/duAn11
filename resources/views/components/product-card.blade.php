@@ -79,11 +79,10 @@
 
                 <!-- Quick Add to Cart: Smaller Trolley Icon -->
                 <button
-                    @click.stop="addToCart($el.dataset.productId, $el.dataset.productName, parseFloat($el.dataset.price), $el.dataset.imageUrl)"
-                    @click="$el.classList.add('scale-90'); setTimeout(() => $el.classList.remove('scale-90'), 200)"
-                    :disabled="{{ ($product->stock > 0) ? 'false' : 'true' }}"
+                    @click.stop="addToCartWithLoading($el.dataset.productId, $el.dataset.productName, parseFloat($el.dataset.price), $el.dataset.imageUrl)"
+                    :disabled="{{ ($product->stock > 0) ? 'false' : 'true' }} || isAdding"
                     class="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all transform active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 group/cart cursor-pointer shadow-sm"
-                    :title="disabled ? 'Sản phẩm hết hàng' : 'Thêm vào giỏ hàng'"
+                    :title="disabled ? (isAdding ? 'Đang thêm...' : 'Sản phẩm hết hàng') : 'Thêm vào giỏ hàng'"
                     data-product-id="{{ $product->id }}"
                     data-product-name="{{ $product->name }}"
                     data-price="{{ $product->price * (1 - ($product->discount ?? 0) / 100) }}"
