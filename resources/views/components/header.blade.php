@@ -55,7 +55,7 @@
         </a>
 
         <!-- Cart Button: Ghost Style H-11 (Perfectly Matched) -->
-        <button @click="$dispatch('toggle-cart-drawer')"
+        <a href="{{ route('client.cart.index') }}"
           class="relative flex items-center gap-2 h-11 px-6 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer active:scale-95 whitespace-nowrap">
           <div class="relative flex items-center">
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,15 +63,14 @@
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
               </path>
             </svg>
-            @if($cartCount > 0)
-              <span
-                class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-black text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white">
-                {{ $cartCount }}
-              </span>
-            @endif
+            <span
+              class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-lg"
+              x-show="cartCount > 0"
+              x-text="cartCount">
+            </span>
           </div>
           <span class="hidden lg:inline uppercase tracking-wider">Giỏ hàng</span>
-        </button>
+        </a>
       </div>
     </div>
 

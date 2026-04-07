@@ -41,13 +41,4 @@
     .apple-btn-white {
         @apply bg-white text-black border border-gray-200 hover:bg-gray-50 active:scale-95;
     }
-    
-    /* Banner Slider Interactivity */
-    .bannerSwiper {
-        cursor: grab;
-    }
-    
-    .bannerSwiper:active {
-        cursor: grabbing;
-    }
 }
