@@ -133,9 +133,9 @@
           </div>
 
           <!-- Checkout Button -->
-          <button class="w-full bg-black text-white font-black text-sm uppercase tracking-widest py-4 rounded-xl hover:bg-gray-800 transition-all active:scale-95 mb-4">
+          <a href="{{ route('checkout.form') }}" class="block w-full bg-black text-white font-black text-sm uppercase tracking-widest py-4 rounded-xl hover:bg-gray-800 transition-all active:scale-95 mb-4 text-center">
             TIẾN HÀNH THANH TOÁN
-          </button>
+          </a>
 
           <!-- Continue Shopping Link -->
           <a href="{{ route('home') }}" class="block w-full text-center border border-black text-black font-bold text-sm uppercase tracking-widest py-3 rounded-xl hover:bg-black hover:text-white transition-all active:scale-95">

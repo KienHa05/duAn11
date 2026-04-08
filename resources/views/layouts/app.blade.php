@@ -14,8 +14,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <!-- Load cart.js BEFORE Alpine.js so cartStore() is defined -->
-  @vite(['resources/js/cart.js'])
+  <!-- Alpine.js (cart.js is now imported in app.js) -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
@@ -116,7 +115,6 @@
       });
     });
   </script>
-  @vite(['resources/js/init.js'])
   @stack('scripts')
 </body>
 

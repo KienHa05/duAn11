@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\CartController as ClientCartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [ClientProductController::class, 'index'])->name('home');
 
@@ -19,6 +20,26 @@ Route::prefix('cart')->name('client.cart.')->group(function () {
   Route::get('/', [ClientCartController::class, 'index'])->name('index');
   Route::post('/update', [ClientCartController::class, 'update'])->name('update');
   Route::delete('/{id}', [ClientCartController::class, 'destroy'])->name('destroy');
+});
+
+// Checkout routes (STAGE 1, 2, 4)
+Route::prefix('checkout')->name('checkout.')->group(function () {
+  Route::get('/', [CheckoutController::class, 'showCheckout'])->name('form');
+  Route::post('/', [CheckoutController::class, 'store'])->name('store');
+});
+
+// Order routes (client)
+Route::prefix('orders')->name('orders.')->group(function () {
+  Route::get('/{order}', [CheckoutController::class, 'show'])->name('show');
+  Route::middleware('auth')->group(function () {
+    Route::get('/', [CheckoutController::class, 'history'])->name('history');
+  });
+});
+
+// API routes
+Route::prefix('api')->group(function () {
+  // STAGE 3: Cart migration after login
+  Route::post('/checkout/migrate-cart', [CheckoutController::class, 'migrateCart']);
 });
 
 // Admin routes
