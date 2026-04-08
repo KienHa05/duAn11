@@ -248,6 +248,69 @@ window.cartStore = function() {
         getItemQuantity(productId) {
             const item = this.items.find(i => i.id === productId);
             return item ? item.quantity : 0;
+        },
+
+        /**
+         * STAGE 3: Migrate localStorage cart to database after login
+         * Called after user logs in using AJAX
+         * Logic: FOR each item in localStorage:
+         *   - IF exists in DB: quantity += local.quantity
+         *   - ELSE: INSERT
+         * Then clear localStorage
+         */
+        async migrateCartToDatabase() {
+            const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            // No items to migrate
+            if (localCart.length === 0) {
+                console.log('📦 Giỏ hàng rỗng, không cần migrate');
+                return;
+            }
+
+            console.log('🔄 Bắt đầu migrate giỏ hàng:', localCart);
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+                const response = await fetch('/api/checkout/migrate-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ items: localCart })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success: Clear localStorage
+                    localStorage.removeItem('cart');
+                    this.clearCart(); // Clear in-memory cart
+
+                    console.log('✅ Giỏ hàng đã migrate thành công');
+                    console.log('📊 Số lượng items:', data.cart_count);
+
+                    this.showToast(`${localCart.length} sản phẩm đã được thêm vào giỏ hàng của bạn!`);
+
+                    // Dispatch event to notify components
+                    window.dispatchEvent(new CustomEvent('cart-migrated', {
+                        detail: { cart_count: data.cart_count }
+                    }));
+
+                    return { success: true, cart_count: data.cart_count };
+                } else {
+                    console.error('❌ Lỗi migrate:', data.message);
+                    this.showToast(data.message || 'Lỗi khi cập nhật giỏ hàng', 'error');
+                    return { success: false, error: data.message };
+                }
+
+            } catch (error) {
+                console.error('❌ Lỗi khi migrate giỏ hàng:', error);
+                this.showToast('Không thể cập nhật giỏ hàng. Vui lòng tải lại trang.', 'error');
+                return { success: false, error: error.message };
+            }
         }
     }
 }
