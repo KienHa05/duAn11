@@ -63,19 +63,45 @@
                     </h3>
                     <div class="divider my-2"></div>
 
+                    <!-- Guest/Member Badge -->
+                    <div class="mb-3">
+                        @if($order->isGuest())
+                            <span class="badge badge-lg badge-warning gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                                Khách hàng
+                            </span>
+                        @else
+                            <span class="badge badge-lg badge-success gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Thành viên
+                            </span>
+                        @endif
+                    </div>
+
                     <div class="space-y-2 text-sm">
                         <div>
                             <p class="font-semibold text-base-content/60">Tên</p>
-                            <p class="text-base">{{ $order->user->name }}</p>
+                            <p class="text-base">{{ $order->customer_name }}</p>
                         </div>
                         <div>
                             <p class="font-semibold text-base-content/60">Email</p>
-                            <p class="text-base truncate">{{ $order->user->email }}</p>
+                            <p class="text-base truncate">{{ $order->customer_email }}</p>
                         </div>
                         <div>
                             <p class="font-semibold text-base-content/60">Điện thoại</p>
-                            <p class="text-base">{{ $order->phone_number }}</p>
+                            <p class="text-base">{{ $order->customer_phone }}</p>
                         </div>
+
+                        @if($order->isGuest())
+                            <div class="bg-warning/10 border border-warning/30 rounded-lg p-2 mt-3">
+                                <p class="text-xs font-semibold text-warning mb-1">🔑 Tracking Token</p>
+                                <p class="text-xs font-mono break-all">{{ $order->tracking_token }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -99,7 +125,7 @@
                                 <time class="text-xs opacity-50">{{ $order->created_at->format('d/m/Y H:i') }}</time>
                             </div>
                         </li>
-                        
+
                         @if($order->paid_at)
                             <li class="timeline-start">
                                 <div class="timeline-middle">
@@ -145,7 +171,7 @@
                     <x-heroicon-o-pencil-square class="w-5 h-5" />
                     Cập nhật trạng thái
                 </a>
-                
+
                 @if(!$order->isCancelled())
                     <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
                         @csrf

@@ -12,6 +12,7 @@ class Order extends Model
 
     protected $fillable = [
         'order_number',
+        'tracking_token',
         'user_id',
         'is_guest',
         'guest_email',
@@ -34,6 +35,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'is_guest' => 'boolean',
         'paid_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -147,6 +149,46 @@ class Order extends Model
             'returned' => 'error',
             default => 'base',
         };
+    }
+
+    /**
+     * Get customer name (guest or member)
+     */
+    public function getCustomerNameAttribute()
+    {
+        return $this->is_guest ? $this->guest_name : $this->user?->name;
+    }
+
+    /**
+     * Get customer email (guest or member)
+     */
+    public function getCustomerEmailAttribute()
+    {
+        return $this->is_guest ? $this->guest_email : $this->user?->email;
+    }
+
+    /**
+     * Get customer phone from order
+     */
+    public function getCustomerPhoneAttribute()
+    {
+        return $this->phone_number;
+    }
+
+    /**
+     * Check if order is from guest
+     */
+    public function isGuest()
+    {
+        return $this->is_guest === true;
+    }
+
+    /**
+     * Check if order is from member
+     */
+    public function isMember()
+    {
+        return !$this->is_guest && $this->user_id !== null;
     }
 
     /**

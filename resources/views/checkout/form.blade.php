@@ -49,7 +49,7 @@
                                 <input type="tel" id="phone" name="phone" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                     placeholder="0123 456 789"
-                                    value="{{ old('phone') }}">
+                                    value="{{ auth()->user()?->phone ?? old('phone') }}">
                                 @error('phone')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -60,13 +60,36 @@
                                 <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
                                     Email <span class="text-red-500">*</span>
                                 </label>
-                                <input type="email" id="email" name="email" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    placeholder="email@example.com"
-                                    value="{{ auth()->user()?->email ?? old('email') }}">
+                                <div class="relative">
+                                    <input type="email" id="email" name="email" required
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                        placeholder="email@example.com"
+                                        value="{{ auth()->user()?->email ?? old('email') }}"
+                                        @if(!auth()->user()) data-check-email @endif>
+
+                                    <!-- Loading Spinner (Hidden by default) -->
+                                    <div id="emailCheckLoading" class="hidden absolute right-4 top-1/2 transform -translate-y-1/2">
+                                        <div class="w-5 h-5 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+                                    </div>
+                                </div>
+
                                 @error('email')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
+
+                                <!-- Email Exists Suggestion (Hidden by default) -->
+                                <div id="emailExistsSuggestion" class="hidden mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p class="text-sm text-blue-900 font-semibold mb-2">
+                                        💡 Email này đã được đăng ký
+                                    </p>
+                                    <p class="text-sm text-blue-800 mb-3">
+                                        Bạn có muốn đăng nhập để nhận ưu đãi thành viên không?
+                                    </p>
+                                    <button type="button" onclick="alert('Tính năng đăng nhập sẽ được thêm trong phiên bản tiếp theo. Hiện tại bạn vẫn có thể tiếp tục thanh toán với email này.')"
+                                        class="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">
+                                        Đăng Nhập Ngay
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Address -->
@@ -298,5 +321,64 @@ document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         alert('Vui lòng chọn sản phẩm để thanh toán');
     }
 });
+
+// STAGE 3: Email check on blur
+const emailInput = document.querySelector('[data-check-email]');
+if (emailInput) {
+    let checkTimeout;
+
+    emailInput.addEventListener('blur', function() {
+        const email = this.value.trim();
+        const suggestion = document.getElementById('emailExistsSuggestion');
+        const loading = document.getElementById('emailCheckLoading');
+
+        // Clear previous suggestion
+        suggestion.classList.add('hidden');
+        loading.classList.add('hidden');
+
+        // Only check if email is valid
+        if (!email || !email.includes('@')) {
+            return;
+        }
+
+        // Debounce: wait 300ms after user stops typing
+        clearTimeout(checkTimeout);
+        checkTimeout = setTimeout(() => {
+            checkEmailExists(email);
+        }, 300);
+    });
+}
+
+async function checkEmailExists(email) {
+    const loading = document.getElementById('emailCheckLoading');
+    const suggestion = document.getElementById('emailExistsSuggestion');
+
+    loading.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/api/checkout/check-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const data = await response.json();
+        loading.classList.add('hidden');
+
+        if (data.exists) {
+            // Email exists - show suggestion
+            suggestion.classList.remove('hidden');
+        } else {
+            // New email - hide suggestion
+            suggestion.classList.add('hidden');
+        }
+    } catch (error) {
+        console.error('Error checking email:', error);
+        loading.classList.add('hidden');
+    }
+}
 </script>
 @endsection

@@ -23,6 +23,35 @@
     <!-- Apple-Style Header -->
     <x-header />
 
+    <!-- Toast Notifications -->
+    @if(session('success'))
+      <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 100); setTimeout(() => show = false, 5000)" x-show="show" class="fixed top-24 right-5 z-[100] rounded-lg bg-green-500 px-6 py-4 text-white shadow-xl flex items-center gap-3 transition-all duration-300" x-transition:enter="transform ease-out duration-300 transition" x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
+        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span class="font-medium">{{ session('success') }}</span>
+        <button @click="show = false" class="ml-4 hover:text-green-200 transition-colors">
+           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+           </svg>
+        </button>
+      </div>
+    @endif
+
+    @if(session('error') || $errors->any())
+      <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 100); setTimeout(() => show = false, 5000)" x-show="show" class="fixed top-24 right-5 z-[100] rounded-lg bg-red-500 px-6 py-4 text-white shadow-xl flex items-center gap-3 transition-all duration-300" x-transition:enter="transform ease-out duration-300 transition" x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
+        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="font-medium">{{ session('error') ?? 'Vui lòng kiểm tra lại thông tin.' }}</span>
+        <button @click="show = false" class="ml-4 hover:text-red-200 transition-colors">
+           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+           </svg>
+        </button>
+      </div>
+    @endif
+
     <!-- Main Content Area -->
     <main class="flex-grow">
       @yield('content')
