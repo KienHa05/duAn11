@@ -35,6 +35,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'is_guest' => 'boolean',
         'paid_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',

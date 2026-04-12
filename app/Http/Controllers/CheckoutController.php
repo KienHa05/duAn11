@@ -10,7 +10,9 @@ use App\Models\UserCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\OrderCreatedMail;
 
 class CheckoutController extends Controller
 {
@@ -189,6 +191,11 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
+
+            // Gửi email xác nhận (Queue background)
+            if ($order->customer_email) {
+                Mail::to($order->customer_email)->send(new OrderCreatedMail($order));
+            }
 
             // REDIRECT TO THANK YOU PAGE with tracking token
             return redirect()->route('checkout.thank-you', ['tracking_token' => $trackingToken])
