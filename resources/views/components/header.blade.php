@@ -65,8 +65,7 @@
             </svg>
             <span
               class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-lg"
-              x-show="cartCount > 0"
-              x-text="cartCount">
+              x-show="cartCount > 0" x-text="cartCount">
             </span>
           </div>
           <span class="hidden lg:inline uppercase tracking-wider">Giỏ hàng</span>

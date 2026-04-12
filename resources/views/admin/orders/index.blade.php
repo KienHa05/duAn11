@@ -20,6 +20,7 @@
                     <thead>
                         <tr class="bg-base-200 hover:bg-base-200">
                             <th class="font-bold">Mã đơn hàng</th>
+                            <th class="font-bold">Loại</th>
                             <th class="font-bold">Khách hàng</th>
                             <th class="font-bold text-right">Tổng tiền</th>
                             <th class="font-bold text-center">Trạng thái đơn</th>
@@ -33,8 +34,25 @@
                             <tr class="hover:bg-base-200 transition">
                                 <td class="font-bold text-primary">{{ $order->order_number }}</td>
                                 <td>
-                                    <div class="font-semibold text-base-content">{{ $order->user->name }}</div>
-                                    <div class="text-xs text-base-content/60">{{ $order->user->email }}</div>
+                                    @if($order->isGuest())
+                                        <span class="badge badge-warning gap-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                            </svg>
+                                            Khách
+                                        </span>
+                                    @else
+                                        <span class="badge badge-success gap-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Thành viên
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="font-semibold text-base-content">{{ $order->customer_name }}</div>
+                                    <div class="text-xs text-base-content/60">{{ $order->customer_email }}</div>
                                 </td>
                                 <td class="font-bold text-right">
                                     {{ number_format($order->total_amount) }}₫
