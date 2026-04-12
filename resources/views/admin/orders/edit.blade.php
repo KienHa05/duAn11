@@ -153,7 +153,7 @@
 
                         <div>
                             <p class="font-semibold text-base-content/60">Khách hàng</p>
-                            <p class="text-base">{{ $order->user->name }}</p>
+                            <p class="text-base">{{ $order->customer_name }}</p>
                         </div>
 
                         <div>
