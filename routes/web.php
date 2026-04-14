@@ -9,13 +9,21 @@ use App\Http\Controllers\Client\CartController as ClientCartController;
 use App\Http\Controllers\Client\TrackingController;
 use App\Http\Controllers\CheckoutController;
 
+use App\Http\Controllers\Auth\AuthController;
+
 Route::get('/', [ClientProductController::class, 'index'])->name('home');
 
-// STAGE 0: Dev Auth (Fallback for testing Admin)
-Route::get('/login', function () {
-    return redirect('/dev/login-admin');
-})->name('login');
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
 
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+// STAGE 0: Dev Auth (Keep for emergency admin access if needed, but rename)
 Route::get('/dev/login-admin', function () {
     $admin = \App\Models\User::firstOrCreate(
         ['email' => 'admin@admin.com'],
