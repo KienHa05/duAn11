@@ -43,17 +43,45 @@ class OrderController extends Controller
   public function update(Request $request, Order $order)
   {
     $request->validate([
-      'status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled,returned',
+      'status' => 'required|in:pending,confirmed,shipping,completed,cancelled,returned',
       'payment_status' => 'required|in:pending,paid,failed,refunded',
       'notes' => 'nullable|string',
     ]);
 
-    $order->update($request->only('status', 'payment_status', 'notes'));
+    $data = $request->only('status', 'payment_status', 'notes');
 
-    // If status changed to shipped, update shipment
-    if ($request->status === 'shipped' && !$order->shipment) {
-      $order->shipment()->create(['status' => 'processing']);
+    // Automatic logic based on status
+    if ($request->status === 'shipping') {
+      if (!$order->shipped_at) {
+        $data['shipped_at'] = now();
+      }
+      
+      // Update shipment if it exists, or create if not
+      if (!$order->shipment) {
+        $order->shipment()->create(['status' => 'in_transit']);
+      } else {
+        $order->shipment->update(['status' => 'in_transit']);
+      }
     }
+
+    if ($request->status === 'completed') {
+      if (!$order->delivered_at) {
+        $data['delivered_at'] = now();
+      }
+      
+      // If payment is pending (likely COD), auto-mark as paid
+      if ($order->payment_status === 'pending') {
+        $data['payment_status'] = 'paid';
+        $data['paid_at'] = now();
+      }
+
+      // Update shipment status if exists
+      if ($order->shipment) {
+        $order->shipment->update(['status' => 'delivered']);
+      }
+    }
+
+    $order->update($data);
 
     return redirect()->route('admin.orders.show', $order)->with('success', 'Đơn hàng đã được cập nhật!');
   }

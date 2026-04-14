@@ -40,9 +40,8 @@
                             <select name="status" class="select select-bordered focus:select-primary text-base @error('status') select-error @enderror">
                                 <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
                                 <option value="confirmed" {{ $order->status === 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
-                                <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Đang xử lý</option>
-                                <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Đã gửi hàng</option>
-                                <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
+                                <option value="shipping" {{ $order->status === 'shipping' ? 'selected' : '' }}>Đang giao hàng</option>
+                                <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Hoàn tất</option>
                                 <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                                 <option value="returned" {{ $order->status === 'returned' ? 'selected' : '' }}>Trả hàng</option>
                             </select>
@@ -61,7 +60,7 @@
                             <x-heroicon-o-information-circle class="w-5 h-5 stroke-current" />
                             <div>
                                 <p class="text-sm font-semibold">Thứ tự trạng thái:</p>
-                                <p class="text-xs mt-1">Chờ xác nhận → Đã xác nhận → Đang xử lý → Đã gửi hàng → Đã giao hàng</p>
+                                <p class="text-xs mt-1">Chờ xác nhận → Đã xác nhận → Đang giao hàng → Hoàn tất</p>
                             </div>
                         </div>
                     </div>
