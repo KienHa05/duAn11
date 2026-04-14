@@ -55,25 +55,15 @@
         </a>
 
         <!-- Authentication / User Menu -->
-        @guest
-          <a href="{{ route('login') }}"
-            class="hidden sm:flex items-center gap-2 h-11 px-6 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer whitespace-nowrap">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-            </svg>
-            <span class="uppercase tracking-wider">Đăng nhập</span>
-          </a>
-        @endguest
-
-        @auth
+        @if(Auth::guard('web')->check())
+          <!-- Client State: User Name + Dropdown -->
           <div x-data="{ open: false }" class="relative">
             <button @click="open = !open" @click.away="open = false"
               class="flex items-center gap-3 h-11 px-4 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer whitespace-nowrap">
-              <div class="w-7 h-7 rounded-full bg-black flex items-center justify-center text-[10px] text-white font-black overflow-hidden ring-2 ring-gray-100">
-                {{ substr(Auth::user()->name, 0, 1) }}
+              <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center text-[11px] text-white font-black overflow-hidden ring-2 ring-gray-100 shadow-sm">
+                {{ substr(Auth::guard('web')->user()->name, 0, 1) }}
               </div>
-              <span class="hidden md:inline uppercase tracking-widest text-[11px]">{{ Auth::user()->name }}</span>
+              <span class="hidden md:inline uppercase tracking-widest text-[11px] font-black">{{ Auth::guard('web')->user()->name }}</span>
               <svg class="w-4 h-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
               </svg>
@@ -87,33 +77,23 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 scale-100 translate-y-0"
               x-transition:leave-end="opacity-0 scale-95 translate-y-2"
-              class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[60] overflow-hidden" 
+              class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[60] overflow-hidden" 
               style="display: none;">
               
-              <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tài khoản</p>
-                <p class="text-xs font-bold text-black truncate mt-0.5">{{ Auth::user()->email }}</p>
+              <div class="px-5 py-4 border-b border-gray-50 mb-1 bg-gray-50/50">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Khách hàng</p>
+                <p class="text-[11px] font-bold text-black truncate mt-1">{{ Auth::guard('web')->user()->email }}</p>
               </div>
 
-              @if(Auth::user()->is_admin)
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                  Quản trị viên
-                </a>
-              @endif
-
-              <a href="{{ route('orders.history') }}" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href="{{ route('orders.history') }}" class="flex items-center gap-3 px-5 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
                 Đơn hàng của tôi
               </a>
 
-              <a href="#" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href="{{ route('profile') }}" class="flex items-center gap-3 px-5 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
                 Hồ sơ cá nhân
@@ -122,7 +102,7 @@
               <div class="mt-1 pt-1 border-t border-gray-50">
                 <form action="{{ route('logout') }}" method="POST">
                   @csrf
-                  <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors">
+                  <button type="submit" class="w-full flex items-center gap-3 px-5 py-3 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
@@ -132,7 +112,20 @@
               </div>
             </div>
           </div>
-        @endauth
+        @else
+          <!-- Guest State: Login | Register -->
+          <div class="hidden sm:flex items-center gap-2">
+            <a href="{{ route('login') }}"
+              class="flex items-center gap-2 h-11 px-5 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer whitespace-nowrap">
+              <span class="uppercase tracking-wider">Đăng nhập</span>
+            </a>
+            <div class="w-px h-4 bg-gray-200"></div>
+            <a href="{{ route('register') }}"
+              class="flex items-center gap-2 h-11 px-5 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer whitespace-nowrap">
+              <span class="uppercase tracking-wider">Đăng ký</span>
+            </a>
+          </div>
+        @endif
 
         <!-- Cart Button: Ghost Style H-11 (Perfectly Matched) -->
         <a href="{{ route('client.cart.index') }}"

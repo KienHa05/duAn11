@@ -11,9 +11,38 @@ use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\Auth\AuthController;
 
+// =============================================================================
+// PUBLIC ROUTES
+// =============================================================================
 Route::get('/', [ClientProductController::class, 'index'])->name('home');
 
-// Authentication Routes
+Route::prefix('product')->name('client.products.')->group(function () {
+  Route::get('/{product}', [ClientProductController::class, 'show'])->name('show');
+});
+
+Route::prefix('cart')->name('client.cart.')->group(function () {
+  Route::get('/', [ClientCartController::class, 'index'])->name('index');
+  Route::post('/update', [ClientCartController::class, 'update'])->name('update');
+  Route::delete('/{id}', [ClientCartController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('track-order')->name('client.track-order.')->group(function () {
+  Route::get('/', [TrackingController::class, 'index'])->name('index');
+  Route::post('/', [TrackingController::class, 'process'])->name('process');
+});
+
+// Checkout routes (Public/Guest)
+Route::prefix('checkout')->name('checkout.')->group(function () {
+  Route::get('/', [CheckoutController::class, 'showCheckout'])->name('form');
+  Route::post('/', [CheckoutController::class, 'store'])->name('store');
+  Route::get('/thank-you/{tracking_token}', [CheckoutController::class, 'thankYou'])->name('thank-you');
+  Route::post('/thank-you/{tracking_token}/upgrade', [CheckoutController::class, 'guestUpgrade'])->name('guest-upgrade');
+});
+
+// =============================================================================
+// AUTHENTICATION ROUTES
+// =============================================================================
+// Client Auth
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -21,9 +50,56 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+// Admin Auth (Separate entry)
+Route::prefix('admin')->middleware('guest:admin')->group(function () {
+    Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+    Route::post('/login', [AuthController::class, 'adminLogin']);
+});
 
-// STAGE 0: Dev Auth (Keep for emergency admin access if needed, but rename)
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:web')->name('logout');
+Route::post('/admin/logout', [AuthController::class, 'adminLogout'])->middleware('auth:admin')->name('admin.logout');
+
+// =============================================================================
+// PROTECTED CLIENT ROUTES (auth)
+// =============================================================================
+Route::middleware('auth:web')->group(function () {
+    // Current user's orders
+    Route::get('/my-orders', [CheckoutController::class, 'history'])->name('orders.history');
+    
+    // User Profile
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    
+    // Auth-only order viewing
+    Route::get('/orders/{order}', [CheckoutController::class, 'show'])->name('orders.show');
+});
+
+// =============================================================================
+// ADMIN ROUTES (auth:admin + admin)
+// =============================================================================
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
+  Route::get('/', function () {
+    return view('admin.dashboard');
+  })->name('dashboard');
+
+  Route::resource('products', AdminProductController::class);
+  Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
+  Route::delete('/products/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('products.force-delete');
+
+  Route::resource('categories', AdminCategoryController::class);
+
+  Route::resource('orders', AdminOrderController::class, ['only' => ['index', 'show', 'edit', 'update']]);
+  Route::post('/orders/{order}/shipment', [AdminOrderController::class, 'updateShipment'])->name('orders.shipment');
+  Route::post('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+});
+
+// API routes
+Route::prefix('api')->group(function () {
+  Route::post('/checkout/migrate-cart', [CheckoutController::class, 'migrateCart']);
+  Route::post('/checkout/check-email', [CheckoutController::class, 'checkEmail']);
+});
+
+// STAGE 0: Dev Auth (Emergency Shortcut)
 Route::get('/dev/login-admin', function () {
     $admin = \App\Models\User::firstOrCreate(
         ['email' => 'admin@admin.com'],
@@ -39,68 +115,5 @@ Route::get('/dev/login-admin', function () {
         $admin->save();
     }
     auth()->login($admin);
-    return redirect()->route('admin.orders.index')->with('success', 'Đã tự động đăng nhập Admin (Dev Mode)!');
-});
-
-// Client routes
-Route::prefix('product')->name('client.products.')->group(function () {
-  Route::get('/{product}', [ClientProductController::class, 'show'])->name('show');
-});
-
-// Cart routes
-Route::prefix('cart')->name('client.cart.')->group(function () {
-  Route::get('/', [ClientCartController::class, 'index'])->name('index');
-  Route::post('/update', [ClientCartController::class, 'update'])->name('update');
-  Route::delete('/{id}', [ClientCartController::class, 'destroy'])->name('destroy');
-});
-
-// Checkout routes (STAGE 1, 2, 4)
-Route::prefix('checkout')->name('checkout.')->group(function () {
-  Route::get('/', [CheckoutController::class, 'showCheckout'])->name('form');
-  Route::post('/', [CheckoutController::class, 'store'])->name('store');
-  Route::get('/thank-you/{tracking_token}', [CheckoutController::class, 'thankYou'])->name('thank-you');
-  Route::post('/thank-you/{tracking_token}/upgrade', [CheckoutController::class, 'guestUpgrade'])->name('guest-upgrade');
-});
-
-// Order routes (client)
-Route::prefix('orders')->name('orders.')->group(function () {
-  Route::get('/{order}', [CheckoutController::class, 'show'])->name('show');
-  Route::middleware('auth')->group(function () {
-    Route::get('/', [CheckoutController::class, 'history'])->name('history');
-  });
-});
-
-// Tracking routes
-Route::prefix('track-order')->name('client.track-order.')->group(function () {
-  Route::get('/', [TrackingController::class, 'index'])->name('index');
-  Route::post('/', [TrackingController::class, 'process'])->name('process');
-});
-
-// API routes
-Route::prefix('api')->group(function () {
-  // STAGE 3: Cart migration after login
-  Route::post('/checkout/migrate-cart', [CheckoutController::class, 'migrateCart']);
-
-  // STAGE 3: Email existence check during checkout
-  Route::post('/checkout/check-email', [CheckoutController::class, 'checkEmail']);
-});
-
-// Admin routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-  Route::get('/', function () {
-    return view('admin.dashboard');
-  })->name('dashboard');
-
-  Route::resource('products', AdminProductController::class);
-
-  // Product restore and force delete routes
-  Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
-  Route::delete('/products/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('products.force-delete');
-
-  Route::resource('categories', AdminCategoryController::class);
-
-  // Order routes
-  Route::resource('orders', AdminOrderController::class, ['only' => ['index', 'show', 'edit', 'update']]);
-  Route::post('/orders/{order}/shipment', [AdminOrderController::class, 'updateShipment'])->name('orders.shipment');
-  Route::post('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+    return redirect()->route('admin.dashboard')->with('success', 'Đã tự động đăng nhập Admin (Dev Mode)!');
 });

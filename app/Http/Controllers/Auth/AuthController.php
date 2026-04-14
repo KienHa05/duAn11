@@ -15,10 +15,21 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
-        if (Auth::check()) {
+        if (Auth::guard('web')->check()) {
             return redirect()->route('home');
         }
         return view('auth.login');
+    }
+
+    /**
+     * Show Admin login form
+     */
+    public function showAdminLogin()
+    {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return view('admin.auth.login');
     }
 
     /**
@@ -35,15 +46,11 @@ class AuthController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu',
         ]);
 
-        if (Auth::attempt($credentials, $request->remember)) {
+        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            // Redirect to admin if is_admin
-            if (Auth::user()->is_admin) {
-                return redirect()->intended('/admin');
-            }
-
-            return redirect()->intended('/')->with('success', 'Chào mừng quay trở lại, ' . Auth::user()->name . '!');
+            // Rule: /login via 'web' guard always leads to Home
+            return redirect()->intended('/')->with('success', 'Chào mừng quay trở lại, ' . Auth::guard('web')->user()->name . '!');
         }
 
         return back()->withErrors([
@@ -52,11 +59,44 @@ class AuthController extends Controller
     }
 
     /**
+     * Process Admin login
+     */
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ], [
+            'email.required' => 'Vui lòng nhập email',
+            'email.email' => 'Email không đúng định dạng',
+            'password.required' => 'Vui lòng nhập mật khẩu',
+        ]);
+
+        // Attempt login using 'admin' guard
+        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
+            // Strict check: Must be admin attribute
+            if (!Auth::guard('admin')->user()->is_admin) {
+                Auth::guard('admin')->logout();
+                return back()->withErrors([
+                    'email' => 'Tài khoản này không có quyền truy cập vùng quản trị.',
+                ])->onlyInput('email');
+            }
+
+            $request->session()->regenerate();
+            return redirect()->intended('/admin');
+        }
+
+        return back()->withErrors([
+            'email' => 'Thông tin đăng nhập quản trị không chính xác.',
+        ])->onlyInput('email');
+    }
+
+    /**
      * Show register form
      */
     public function showRegister()
     {
-        if (Auth::check()) {
+        if (Auth::guard('web')->check()) {
             return redirect()->route('home');
         }
         return view('auth.register');
@@ -90,21 +130,60 @@ class AuthController extends Controller
             'is_admin' => false,
         ]);
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
 
         return redirect()->route('home')->with('success', 'Đăng ký tài khoản thành công!');
     }
 
     /**
-     * Process logout
+     * Show user profile
+     */
+    public function profile()
+    {
+        return view('client.profile', ['user' => Auth::guard('web')->user()]);
+    }
+
+    /**
+     * Update user profile
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::guard('web')->user();
+        
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        ]);
+
+        $user->update($request->only('name', 'email', 'phone'));
+
+        return back()->with('success', 'Hồ sơ đã được cập nhật thành công!');
+    }
+
+    /**
+     * Process logout for Client (web guard)
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Web session invalidation
+        $request->session()->forget('login_web_59ba36addc2b2f9401580f014c7f58ea4e30989d'); // Example key, better use session()->invalidate() if only one guard
+        // Wait, session()->invalidate() clears EVERYTHING. 
+        // We want to keep the other guard logged in.
+        // Laravel handles this by guard name prefix in session keys.
+        
+        return redirect('/')->with('success', 'Bạn đã đăng xuất khỏi khu vực khách hàng.');
+    }
 
-        return redirect('/')->with('success', 'Bạn đã đăng xuất thành công.');
+    /**
+     * Process logout for Admin (admin guard)
+     */
+    public function adminLogout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+
+        return redirect()->route('admin.login')->with('success', 'Bạn đã đăng xuất khỏi hệ thống quản trị.');
     }
 }

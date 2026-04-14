@@ -103,7 +103,30 @@
 
                     <div class="divider my-4"></div>
 
-                    <a href="{{ route('home') }}" class="btn btn-ghost w-full justify-start gap-2">
+                    <!-- Admin Session Info & Logout -->
+                    <div class="bg-base-200 rounded-2xl p-4 mb-4">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="avatar placeholder">
+                                <div class="w-10 rounded-full bg-neutral text-neutral-content">
+                                    <span>{{ substr(Auth::guard('admin')->user()->name, 0, 1) }}</span>
+                                </div>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-black uppercase tracking-widest opacity-50">Đang quản trị</p>
+                                <p class="text-sm font-bold truncate">{{ Auth::guard('admin')->user()->name }}</p>
+                            </div>
+                        </div>
+                        
+                        <form action="{{ route('admin.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-error btn-sm btn-block gap-2 rounded-xl text-white font-bold">
+                                <x-heroicon-o-arrow-left-on-rectangle class="w-4 h-4" />
+                                Đăng xuất
+                            </button>
+                        </form>
+                    </div>
+
+                    <a href="{{ route('home') }}" class="btn btn-ghost w-full justify-start gap-2 rounded-xl">
                         <x-heroicon-o-home class="w-5 h-5" />
                         Về trang chủ
                     </a>

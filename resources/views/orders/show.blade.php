@@ -63,8 +63,8 @@
 
                                 <!-- Price -->
                                 <div class="text-right">
-                                    <p class="text-sm text-gray-600">{{ $item->unit_price->toLocaleString('vi-VN') }} ₫</p>
-                                    <p class="font-bold text-gray-900 text-lg">{{ $item->subtotal->toLocaleString('vi-VN') }} ₫</p>
+                                    <p class="text-sm text-gray-600">{{ number_format($item->unit_price, 0, ',', '.') }} ₫</p>
+                                    <p class="font-bold text-gray-900 text-lg">{{ number_format($item->subtotal, 0, ',', '.') }} ₫</p>
                                 </div>
                             </div>
                         @endforeach
@@ -137,24 +137,24 @@
                     <div class="space-y-3">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Tổng Hàng:</span>
-                            <span class="text-gray-900 font-semibold">{{ $order->subtotal->toLocaleString('vi-VN') }} ₫</span>
+                            <span class="text-gray-900 font-semibold">{{ number_format($order->subtotal, 0, ',', '.') }} ₫</span>
                         </div>
 
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Phí Vận Chuyển:</span>
-                            <span class="text-gray-900 font-semibold">{{ $order->shipping_cost->toLocaleString('vi-VN') }} ₫</span>
+                            <span class="text-gray-900 font-semibold">{{ number_format($order->shipping_cost, 0, ',', '.') }} ₫</span>
                         </div>
 
                         @if ($order->discount > 0)
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Giảm Giá:</span>
-                                <span class="text-gray-900 font-semibold">-{{ $order->discount->toLocaleString('vi-VN') }} ₫</span>
+                                <span class="text-gray-900 font-semibold">-{{ number_format($order->discount, 0, ',', '.') }} ₫</span>
                             </div>
                         @endif
 
                         <div class="border-t border-gray-200 pt-3 flex justify-between">
                             <span class="text-lg font-bold text-gray-900">Tổng Cộng:</span>
-                            <span class="text-lg font-bold text-blue-600">{{ $order->total_amount->toLocaleString('vi-VN') }} ₫</span>
+                            <span class="text-lg font-bold text-blue-600">{{ number_format($order->total_amount, 0, ',', '.') }} ₫</span>
                         </div>
                     </div>
 
