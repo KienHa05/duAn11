@@ -4,14 +4,17 @@
 <div class="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
     <div class="container mx-auto px-4">
         <!-- Success Banner -->
-        <div class="mb-8 p-6 bg-green-100 border-l-4 border-green-600 rounded-lg">
+        <!-- Success or Tracking Banner -->
+        <div class="mb-8 p-6 {{ $order->isPending() ? 'bg-green-100 border-green-600' : 'bg-blue-100 border-blue-600' }} border-l-4 rounded-lg">
             <div class="flex items-center gap-4">
-                <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-8 h-8 {{ $order->isPending() ? 'text-green-600' : 'text-blue-600' }}" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
                 </svg>
                 <div>
-                    <h2 class="text-xl font-bold text-green-900">Cảm Ơn! Đơn Hàng Của Bạn Đã Được Tạo</h2>
-                    <p class="text-sm text-green-800 mt-1">Mã đơn hàng: <span class="font-mono font-bold">{{ $order->order_number }}</span></p>
+                    <h2 class="text-xl font-bold {{ $order->isPending() ? 'text-green-900' : 'text-blue-900' }}">
+                        {{ $order->isPending() ? 'Cảm Ơn! Đơn Hàng Của Bạn Đã Được Tạo' : 'Thông Tin Đơn Hàng' }}
+                    </h2>
+                    <p class="text-sm {{ $order->isPending() ? 'text-green-800' : 'text-blue-800' }} mt-1">Mã đơn hàng: <span class="font-mono font-bold">{{ $order->order_number }}</span></p>
                 </div>
             </div>
         </div>
@@ -25,27 +28,38 @@
 
                     <!-- Order Timeline -->
                     <div class="mb-8">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
-                                </svg>
-                            </div>
+                        <div class="relative pl-8 pb-8 border-l-2 border-green-500">
+                            <div class="absolute w-4 h-4 bg-green-500 rounded-full -left-[9px] top-1 border-4 border-white shadow"></div>
                             <div>
-                                <p class="font-bold text-gray-900">Đơn hàng đã tạo</p>
+                                <p class="font-bold text-gray-900">Chờ xác nhận</p>
                                 <p class="text-sm text-gray-600">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
-                                </svg>
-                            </div>
+                        @php $isPastConfirmed = in_array($order->status, ['confirmed', 'shipping', 'completed']); @endphp
+                        <div class="relative pl-8 pb-8 border-l-2 {{ $isPastConfirmed ? 'border-blue-500' : 'border-gray-200' }}">
+                            <div class="absolute w-4 h-4 {{ $isPastConfirmed ? 'bg-blue-500' : 'bg-gray-300' }} rounded-full -left-[9px] top-1 border-4 border-white shadow"></div>
                             <div>
-                                <p class="font-bold text-gray-900">Đang xử lý</p>
-                                <p class="text-sm text-gray-600">Chúng tôi đang xác nhận đơn hàng của bạn</p>
+                                <p class="font-bold {{ $isPastConfirmed ? 'text-gray-900' : 'text-gray-500' }}">Đã xác nhận</p>
+                                <p class="text-sm text-gray-500">{{ $isPastConfirmed ? 'Đơn hàng đã được duyệt' : 'Đang xử lý...' }}</p>
+                            </div>
+                        </div>
+
+                        @php $isPastShipping = in_array($order->status, ['shipping', 'completed']); @endphp
+                        <div class="relative pl-8 pb-8 border-l-2 {{ $isPastShipping ? 'border-indigo-500' : 'border-gray-200' }}">
+                            <div class="absolute w-4 h-4 {{ $isPastShipping ? 'bg-indigo-500' : 'bg-gray-300' }} rounded-full -left-[9px] top-1 border-4 border-white shadow"></div>
+                            <div>
+                                <p class="font-bold {{ $isPastShipping ? 'text-gray-900' : 'text-gray-500' }}">Đang giao hàng</p>
+                                <p class="text-sm text-gray-500">{{ $order->shipped_at ? $order->shipped_at->format('d/m/Y H:i') : 'Chờ vận chuyển...' }}</p>
+                            </div>
+                        </div>
+
+                        @php $isCompleted = $order->status === 'completed'; @endphp
+                        <div class="relative pl-8">
+                            <div class="absolute w-4 h-4 {{ $isCompleted ? 'bg-green-500' : 'bg-gray-300' }} rounded-full -left-[9px] top-1 border-4 border-white shadow"></div>
+                            <div>
+                                <p class="font-bold {{ $isCompleted ? 'text-gray-900' : 'text-gray-500' }}">Hoàn tất</p>
+                                <p class="text-sm text-gray-500">{{ $order->delivered_at ? $order->delivered_at->format('d/m/Y H:i') : 'Dự kiến...' }}</p>
                             </div>
                         </div>
                     </div>
@@ -144,9 +158,19 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
-                        <p class="text-sm text-yellow-900">
-                            <span class="font-semibold">⏳ Trạng thái:</span> Chờ xác nhận
+                    @php
+                        $statusClasses = match($order->status) {
+                            'pending' => 'bg-yellow-50 border-yellow-200 text-yellow-900',
+                            'confirmed' => 'bg-blue-50 border-blue-200 text-blue-900',
+                            'shipping' => 'bg-indigo-50 border-indigo-200 text-indigo-900',
+                            'completed' => 'bg-green-50 border-green-200 text-green-900',
+                            'cancelled', 'returned' => 'bg-red-50 border-red-200 text-red-900',
+                            default => 'bg-gray-50 border-gray-200 text-gray-900'
+                        };
+                    @endphp
+                    <div class="p-4 rounded-lg mb-6 border {{ $statusClasses }}">
+                        <p class="text-sm font-semibold">
+                            ⏳ Trạng thái: {{ $order->status_label }}
                         </p>
                     </div>
 
