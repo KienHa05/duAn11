@@ -84,19 +84,14 @@ class Order extends Model
         return $this->status === 'confirmed';
     }
 
-    public function isProcessing()
+    public function isShipping()
     {
-        return $this->status === 'processing';
+        return $this->status === 'shipping';
     }
 
-    public function isShipped()
+    public function isCompleted()
     {
-        return $this->status === 'shipped';
-    }
-
-    public function isDelivered()
-    {
-        return $this->status === 'delivered';
+        return $this->status === 'completed';
     }
 
     public function isCancelled()
@@ -117,9 +112,8 @@ class Order extends Model
         return match($this->status) {
             'pending' => 'Chờ xác nhận',
             'confirmed' => 'Đã xác nhận',
-            'processing' => 'Đang xử lý',
-            'shipped' => 'Đã gửi hàng',
-            'delivered' => 'Đã giao hàng',
+            'shipping' => 'Đang giao hàng',
+            'completed' => 'Hoàn tất',
             'cancelled' => 'Đã hủy',
             'returned' => 'Trả hàng',
             default => 'Không xác định',
@@ -142,9 +136,8 @@ class Order extends Model
         return match($this->status) {
             'pending' => 'warning',
             'confirmed' => 'info',
-            'processing' => 'info',
-            'shipped' => 'primary',
-            'delivered' => 'success',
+            'shipping' => 'primary',
+            'completed' => 'success',
             'cancelled' => 'error',
             'returned' => 'error',
             default => 'base',

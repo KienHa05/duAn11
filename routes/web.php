@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\CartController as ClientCartController;
+use App\Http\Controllers\Client\TrackingController;
 use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [ClientProductController::class, 'index'])->name('home');
@@ -59,6 +60,12 @@ Route::prefix('orders')->name('orders.')->group(function () {
   Route::middleware('auth')->group(function () {
     Route::get('/', [CheckoutController::class, 'history'])->name('history');
   });
+});
+
+// Tracking routes
+Route::prefix('track-order')->name('client.track-order.')->group(function () {
+  Route::get('/', [TrackingController::class, 'index'])->name('index');
+  Route::post('/', [TrackingController::class, 'process'])->name('process');
 });
 
 // API routes
