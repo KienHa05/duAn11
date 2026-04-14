@@ -35,8 +35,8 @@ class CheckoutController extends Controller
      */
     public function migrateCart(Request $request)
     {
-        // Validate user is authenticated
-        if (!Auth::check()) {
+        // Validate user is authenticated in the 'web' guard
+        if (!Auth::guard('web')->check()) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
         }
 
@@ -46,7 +46,7 @@ class CheckoutController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
         $localItems = $request->items;
 
         try {
@@ -113,7 +113,7 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = Auth::user();
+            $user = Auth::guard('web')->user();
             $items = $request->items;
 
             // SECURITY: Validate prices from database (don't trust frontend)
@@ -217,10 +217,8 @@ class CheckoutController extends Controller
         $order = Order::where('tracking_token', $trackingToken)->firstOrFail();
         $order->load(['items.product', 'shipment', 'payments']);
 
-        // Check authorization:
-        // - If member logged in: can only view their own orders
-        // - If guest: can view via tracking_token
-        if ($order->user_id && Auth::check() && $order->user_id !== Auth::id()) {
+        // Check authorization in the 'web' guard
+        if ($order->user_id && Auth::guard('web')->check() && $order->user_id !== Auth::guard('web')->id()) {
             abort(403, 'Bạn không có quyền xem đơn hàng này');
         }
 
@@ -233,8 +231,8 @@ class CheckoutController extends Controller
     public function show(Order $order)
     {
         // Allow guest to view their order with order number (no auth needed for guest orders)
-        // or allow authed user to view their order
-        if ($order->user_id && $order->user_id !== Auth::id()) {
+        // or allow authed user to view their order (using 'web' guard)
+        if ($order->user_id && $order->user_id !== Auth::guard('web')->id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -247,9 +245,7 @@ class CheckoutController extends Controller
      */
     public function history()
     {
-        $this->middleware('auth');
-
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::where('user_id', Auth::guard('web')->id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -324,8 +320,8 @@ class CheckoutController extends Controller
                 'is_guest' => false,
             ]);
 
-            // Auto-login the user
-            Auth::login($user);
+            // Auto-login the user into the 'web' guard
+            Auth::guard('web')->login($user);
 
             DB::commit();
 

@@ -13,9 +13,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated and is admin
-        if (!auth()->check() || !auth()->user()->is_admin) {
-            abort(403, 'Unauthorized - Admin access required');
+        // Check if user is authenticated in the 'admin' guard
+        if (!auth()->guard('admin')->check()) {
+            return redirect()->route('admin.login')->with('error', 'Vui lòng đăng nhập quyền quản trị.');
         }
 
         return $next($request);

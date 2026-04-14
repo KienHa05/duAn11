@@ -385,11 +385,19 @@
 
         <div class="navbar-end">
             <div class="navbar-user">
-                <div class="user-avatar">A</div>
-                <div>
-                    <div style="font-size: 0.9rem; font-weight: 600;">Admin</div>
-                    <div style="font-size: 0.8rem; color: #999;">Quản trị viên</div>
+                <div class="user-avatar">{{ substr(Auth::guard('admin')->user()->name, 0, 1) }}</div>
+                <div class="me-3">
+                    <div style="font-size: 0.9rem; font-weight: 600;">{{ Auth::guard('admin')->user()->name }}</div>
+                    <div style="font-size: 0.8rem; color: #999;">Administrator</div>
                 </div>
+                
+                <!-- Admin Logout -->
+                <form action="{{ route('admin.logout') }}" method="POST" class="ms-3 border-start ps-3">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                        <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất Admin
+                    </button>
+                </form>
             </div>
         </div>
     </nav>

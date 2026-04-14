@@ -23,7 +23,7 @@ class AdminOrderFlowTest extends TestCase
   {
     $order = Order::factory()->create(['status' => 'pending']);
 
-    $response = $this->actingAs($this->admin)
+    $response = $this->actingAs($this->admin, 'admin')
       ->put(route('admin.orders.update', $order), [
         'status' => 'shipping',
         'payment_status' => 'pending',
@@ -43,7 +43,7 @@ class AdminOrderFlowTest extends TestCase
       'payment_status' => 'pending'
     ]);
 
-    $response = $this->actingAs($this->admin)
+    $response = $this->actingAs($this->admin, 'admin')
       ->put(route('admin.orders.update', $order), [
         'status' => 'completed',
         'payment_status' => 'pending', // Even if submitted as pending, should auto-switch to paid
