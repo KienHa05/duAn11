@@ -144,7 +144,7 @@
                                     <x-heroicon-o-check-circle class="w-5 h-5 text-success" />
                                 </div>
                                 <div class="timeline-end text-sm mb-3">
-                                    <div class="font-bold">Đã gửi hàng</div>
+                                    <div class="font-bold">Đang giao hàng</div>
                                     <time class="text-xs opacity-50">{{ $order->shipped_at->format('d/m/Y H:i') }}</time>
                                 </div>
                             </li>
@@ -156,7 +156,7 @@
                                     <x-heroicon-o-check-circle class="w-5 h-5 text-success" />
                                 </div>
                                 <div class="timeline-end text-sm">
-                                    <div class="font-bold">Đã giao hàng</div>
+                                    <div class="font-bold">Hoàn tất</div>
                                     <time class="text-xs opacity-50">{{ $order->delivered_at->format('d/m/Y H:i') }}</time>
                                 </div>
                             </li>
