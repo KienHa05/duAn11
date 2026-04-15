@@ -149,7 +149,10 @@ class Order extends Model
      */
     public function getCustomerNameAttribute()
     {
-        return $this->is_guest ? $this->guest_name : $this->user?->name;
+        return $this->user?->name
+            ?? $this->guest_name
+            ?? $this->guest_email
+            ?? 'Khach hang';
     }
 
     /**
