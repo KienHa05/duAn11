@@ -84,10 +84,14 @@ class AnalyticsController extends Controller
     private function getRevenueAndOrdersTrend($startDate, $endDate, $groupBy)
     {
         $format = ($groupBy === 'month') ? '%Y-%m' : '%Y-%m-%d';
-        
+        $driver = DB::getDriverName();
+        $dateExpression = ($driver === 'sqlite') 
+            ? "strftime('$format', created_at)" 
+            : "DATE_FORMAT(created_at, '$format')";
+            
         $data = Order::whereBetween('created_at', [$startDate, $endDate])
             ->select(
-                DB::raw("DATE_FORMAT(created_at, '$format') as date"),
+                DB::raw("$dateExpression as date"),
                 DB::raw("COUNT(*) as order_count"),
                 DB::raw("SUM(CASE WHEN payment_status = 'paid' THEN total_amount ELSE 0 END) as revenue")
             )
