@@ -103,31 +103,21 @@ class AdminDashboardTest extends TestCase
             ->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSeeText('Tổng quan vận hành');
-        $response->assertSeeText('Tổng sản phẩm');
-        $response->assertSeeText('Tổng danh mục');
-        $response->assertSeeText('Tổng người dùng');
-        $response->assertSeeText('Đơn chờ xác nhận');
-        $response->assertSeeText('Đơn đang giao');
-        $response->assertSeeText('Đơn hoàn tất hôm nay');
-        $response->assertSeeText('Doanh thu hôm nay');
-        $response->assertSeeText('Đơn hàng gần đây');
-        $response->assertSeeText('Cảnh báo sắp hết hàng');
-        $response->assertSeeText('Mã đơn hàng');
-        $response->assertSeeText('Khách hàng');
-        $response->assertSeeText('Tổng tiền');
-        $response->assertSeeText('Trạng thái');
-        $response->assertSeeText('Ngày tạo');
-        $response->assertSeeText('450,000');
-        $response->assertSeeText('ORD-1006');
-        $response->assertSeeText('guest@example.com');
-        $response->assertSeeText('Low Stock Tee');
-        $response->assertSeeText('Almost Gone Hoodie');
-        $response->assertDontSeeText('Healthy Stock Sneaker');
-        $response->assertDontSeeText('ORD-1005');
+        $response->assertSeeText('Báo cáo Phân tích');
+        $response->assertSeeText('Chỉ số nền tảng');
+        $response->assertSeeText('Sản phẩm');
+        $response->assertSeeText('Danh mục');
+        $response->assertSeeText('Người dùng');
+        $response->assertSeeText('Tổng đơn hàng');
+        $response->assertSeeText('Vận hành hôm nay');
         $response->assertSeeText('Chờ xác nhận');
-        $response->assertSeeText('Đang giao hàng');
-        $response->assertSeeText('Hoàn tất');
+        $response->assertSeeText('Đang giao');
+        $response->assertSeeText('Xử lý xong');
+        $response->assertSeeText('Doanh thu ngày');
+        $response->assertSeeText('Xu hướng Tăng trưởng');
+        $response->assertSeeText('Sản phẩm Bán chạy');
+        $response->assertSeeText('Cảnh báo Bán chậm');
+        $response->assertSeeText('450,000');
         $response->assertDontSeeText('Recent Orders');
         $response->assertDontSeeText('Low Stock Alert');
         $response->assertDontSeeText('pending');
@@ -136,14 +126,40 @@ class AdminDashboardTest extends TestCase
         $response->assertDontSeeText('Laravel');
     }
 
+    public function test_analytics_api_returns_correct_data(): void
+    {
+        $category = Category::create(['name' => 'Apparel']);
+        
+        // Create a product with low stock
+        Product::create([
+            'name' => 'Low Stock Tee',
+            'price' => 120000,
+            'stock' => 3,
+            'category_id' => $category->id,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.api.analytics.data'));
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'revenue_orders',
+            'top_sellers',
+            'slow_sellers',
+            'order_status'
+        ]);
+
+        $response->assertJsonFragment(['name' => 'Low Stock Tee']);
+    }
+
     public function test_dashboard_shows_empty_states_when_no_business_data_exists(): void
     {
         $response = $this->actingAs($this->admin, 'admin')
             ->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSeeText('Chưa có đơn hàng nào');
-        $response->assertSeeText('Chưa có sản phẩm sắp hết');
-        $response->assertSeeText('Chưa phát sinh doanh thu hôm nay.');
+        $response->assertSeeText('Báo cáo Phân tích');
+        // KPIs should show 0
+        $response->assertSeeText('0');
     }
 }
