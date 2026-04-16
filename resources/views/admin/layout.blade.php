@@ -6,6 +6,7 @@
     <title>@yield('title', 'Tổng Quan Admin') - The Notorious</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 </head>
 <body class="bg-base-200">
@@ -138,5 +139,6 @@
     <script>
         // Optional: Add any JavaScript for sidebar toggle if needed
     </script>
+    @stack('scripts')
 </body>
 </html>

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
@@ -79,7 +78,8 @@ Route::middleware('auth:web')->group(function () {
 // ADMIN ROUTES (auth:admin + admin)
 // =============================================================================
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
-  Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+  Route::get('/', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('dashboard');
+  Route::get('/api/analytics/data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('api.analytics.data');
 
   Route::resource('products', AdminProductController::class);
   Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
