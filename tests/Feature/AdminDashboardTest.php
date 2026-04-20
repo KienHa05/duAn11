@@ -25,6 +25,7 @@ class AdminDashboardTest extends TestCase
     public function test_dashboard_shows_expected_kpis_recent_orders_and_low_stock_alerts(): void
     {
         config(['app.timezone' => 'Asia/Bangkok']);
+        $this->travelTo(now('Asia/Bangkok')->setTime(12, 0, 0));
 
         $category = Category::create(['name' => 'Apparel']);
         User::factory()->count(2)->create();
