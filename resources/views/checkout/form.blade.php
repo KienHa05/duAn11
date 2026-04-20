@@ -260,16 +260,32 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize cart display
+    // Attempt 1: run immediately (catches 'buy_now_cart' reliably)
     updateCartDisplay();
 
-    // Listen for cart changes
+    // Attempt 2: re-run after Alpine initialises (in case cartStore loaded late)
+    document.addEventListener('alpine:initialized', function() {
+        updateCartDisplay();
+    });
+
+    // Listen for future cart changes (e.g. user edits cart in another tab)
     window.addEventListener('cart-updated', updateCartDisplay);
 });
 
 function updateCartDisplay() {
-    const cartData = window.cartStore || { items: [] };
-    const items = cartData.items || JSON.parse(localStorage.getItem('cart') || '[]');
+    // Priority: "Buy Now" flow uses a dedicated key, regular cart uses 'cart'
+    const buyNowRaw = localStorage.getItem('buy_now_cart');
+    let items;
+
+    if (buyNowRaw) {
+        // Coming from "Mua Ngay" - use this item only, then clear the flag
+        items = JSON.parse(buyNowRaw);
+        localStorage.removeItem('buy_now_cart'); // One-time use
+    } else {
+        // Coming from normal cart flow
+        const cartData = window.cartStore || { items: [] };
+        items = cartData.items || JSON.parse(localStorage.getItem('cart') || '[]');
+    }
 
     const cartItemsEl = document.getElementById('cartItems');
     const itemsInput = document.getElementById('itemsInput');
@@ -282,12 +298,13 @@ function updateCartDisplay() {
 
     // Update visible items
     cartItemsEl.innerHTML = items.map(item => `
-        <div class="flex justify-between items-center pb-3 border-b border-gray-100">
-            <div class="flex-1">
-                <p class="font-medium text-sm text-gray-900 truncate">${item.name}</p>
-                <p class="text-xs text-gray-500">x${item.quantity}</p>
+        <div class="flex gap-3 items-start pb-3 border-b border-gray-100">
+            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}" class="w-14 h-14 object-cover rounded-lg flex-shrink-0 border border-gray-100">` : ''}
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm text-gray-900 leading-tight">${item.name}</p>
+                <p class="text-xs text-gray-400 mt-0.5">Số lượng: ${item.quantity}</p>
+                <p class="font-bold text-sm text-gray-900 mt-1">${(item.price * item.quantity).toLocaleString('vi-VN')} ₫</p>
             </div>
-            <p class="font-semibold text-sm text-gray-900">${(item.price * item.quantity).toLocaleString('vi-VN')} ₫</p>
         </div>
     `).join('');
 

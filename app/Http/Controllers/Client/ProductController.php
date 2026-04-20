@@ -40,6 +40,14 @@ class ProductController extends Controller
         }
         
         $product->load('category');
-        return view('client.products.show', compact('product'));
+
+        // Fetch related products (same category, excluding current product)
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->withoutTrashed()
+            ->limit(4)
+            ->get();
+
+        return view('client.products.show', compact('product', 'relatedProducts'));
     }
 }

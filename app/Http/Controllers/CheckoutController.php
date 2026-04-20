@@ -124,25 +124,30 @@ class CheckoutController extends Controller
                 // Get product from DB
                 $product = Product::findOrFail($item['id']);
 
-                // Compare frontend price with DB price
-                // Allow ±1% tolerance for tiny float differences
-                $priceDiff = abs($item['price'] - $product->price);
-                $tolerance = $product->price * 0.01; // 1% tolerance
+                // Calculate expected price based on discount
+                $originalPrice = $product->price;
+                $discountPercent = $product->discount ?? 0;
+                $expectedPrice = $originalPrice * (1 - $discountPercent / 100);
+
+                // Compare frontend price with calculated DB price
+                // Allow ±1% tolerance for tiny float differences or rounding
+                $priceDiff = abs($item['price'] - $expectedPrice);
+                $tolerance = $expectedPrice * 0.01; 
 
                 if ($priceDiff > $tolerance) {
-                    // Price mismatch - potential fraud attempt
+                    // Price mismatch - potential fraud attempt or stale data
                     throw new \Exception(
-                        "Giá sản phẩm '{$product->name}' không khớp. Vui lòng tải lại và thử lại."
+                        "Giá sản phẩm '{$product->name}' không hợp lệ hoặc đã thay đổi. Vui lòng cập nhật lại giỏ hàng."
                     );
                 }
 
                 $validatedItems[] = [
                     'id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $product->price, // Use DB price, not FE price
+                    'price' => $expectedPrice, // Use calculated price
                 ];
 
-                $subtotal += $product->price * $item['quantity'];
+                $subtotal += $expectedPrice * $item['quantity'];
             }
 
             // Calculate totals
