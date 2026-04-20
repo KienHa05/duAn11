@@ -42,4 +42,51 @@ class ProductController extends Controller
         $product->load('category');
         return view('client.products.show', compact('product'));
     }
+
+    /**
+     * API endpoint for live search
+     */
+    public function searchApi(Request $request)
+    {
+        $query = $request->get('q');
+        
+        if (empty($query)) {
+            return response()->json([
+                'products' => [],
+                'categories' => []
+            ]);
+        }
+
+        $products = Product::withoutTrashed()
+            ->where('name', 'like', "%{$query}%")
+            ->with('category')
+            ->limit(5)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => number_format($product->price, 0, ',', '.') . ' ₫',
+                    'image' => $product->image_url,
+                    'url' => route('client.products.show', $product),
+                    'category' => $product->category->name ?? 'N/A'
+                ];
+            });
+
+        $categories = Category::where('name', 'like', "%{$query}%")
+            ->limit(3)
+            ->get()
+            ->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'url' => route('home') . '?category=' . $category->id
+                ];
+            });
+
+        return response()->json([
+            'products' => $products,
+            'categories' => $categories
+        ]);
+    }
 }

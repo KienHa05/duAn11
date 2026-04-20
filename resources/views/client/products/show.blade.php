@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
-@section('title', $product->name . ' - The Notorious')
+@section('title', $product->name . ' - Notorious Minimalist Performance')
+@section('meta_description', Str::limit(strip_tags($product->description), 160))
+@section('og_image', $product->image_url)
+@section('og_type', 'product')
 
 @section('content')
 <div class="bg-base-50 min-h-screen py-8 lg:py-12" x-data="{ 
@@ -204,6 +207,17 @@
                             class="flex-1 btn h-14 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white hover:shadow-lg hover:shadow-blue-500/30 rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1">
                             Mua Ngay
                         </button>
+                        
+                        <!-- Wishlist Button -->
+                        <button 
+                            @click="toggleWishlist({{ $product->id }})"
+                            class="w-14 h-14 rounded-xl border border-gray-200 flex items-center justify-center transition-all duration-300 hover:bg-rose-50 group shadow-sm bg-white"
+                            :class="isInWishlist({{ $product->id }}) ? 'border-rose-100 bg-rose-50' : ''"
+                        >
+                            <svg class="w-6 h-6 transition-all duration-300" :class="isInWishlist({{ $product->id }}) ? 'text-rose-500 scale-110' : 'text-gray-400 group-hover:text-rose-400'" :fill="isInWishlist({{ $product->id }}) ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -277,8 +291,161 @@
     </div>
 </div>
 
-<style>
-    /* Safe area padding for mobile notches */
-    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
-</style>
+    <!-- Reviews Section -->
+    <section class="mt-24 border-t border-gray-100 pt-20 pb-32" id="reviews">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <div class="flex flex-col md:flex-row gap-16">
+                <!-- Left: Review Summary -->
+                <div class="w-full md:w-1/3 lg:w-1/4">
+                    <h2 class="text-3xl font-black text-black tracking-tighter uppercase mb-6">Đánh giá sản phẩm</h2>
+                    <div class="bg-gray-50 rounded-3xl p-8 border border-gray-100">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="text-6xl font-black text-black tracking-tighter">{{ $product->average_rating }}</span>
+                            <div>
+                                <div class="flex text-yellow-400 mb-1">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <svg class="w-5 h-5 {{ $i <= floor($product->average_rating) ? 'fill-current' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                        </svg>
+                                    @endfor
+                                </div>
+                                <span class="text-sm text-gray-500 font-medium whitespace-nowrap">{{ $product->review_count }} đánh giá khách quan</span>
+                            </div>
+                        </div>
+
+                        <!-- Rating Bars (Visual only for now) -->
+                        <div class="space-y-2 mt-8">
+                            @foreach([5, 4, 3, 2, 1] as $star)
+                                @php
+                                    $count = $product->reviews->where('rating', $star)->count();
+                                    $percent = $product->review_count > 0 ? ($count / $product->review_count) * 100 : 0;
+                                @endphp
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-black text-gray-400 w-4">{{ $star }} ★</span>
+                                    <div class="flex-grow h-1 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-black transition-all duration-1000" style="width: {{ $percent }}%"></div>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-gray-300 w-8 text-right">{{ round($percent) }}%</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Reviews List & Form -->
+                <div class="flex-grow">
+                    <!-- Form: Apple-style Minimalism -->
+                    @auth
+                        @php
+                            $hasReviewed = $product->reviews->where('user_id', auth()->id())->first();
+                        @endphp
+                        
+                        @if(!$hasReviewed)
+                        <div class="mb-16 bg-white border border-gray-100 rounded-3xl p-8 shadow-sm" x-data="{ rating: 5 }">
+                            <h3 class="text-xl font-black text-black mb-6 uppercase tracking-tighter">Viết đánh giá của bạn</h3>
+                            <form action="{{ route('reviews.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="rating" x-model="rating">
+                                
+                                <div class="mb-8">
+                                    <label class="block text-[11px] font-black uppercase tracking-widest text-gray-400 mb-4">Điểm đánh giá của bạn*</label>
+                                    <div class="flex gap-2">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <button type="button" @click="rating = {{ $i }}" class="w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all duration-300" :class="rating >= {{ $i }} ? 'bg-black border-black text-white' : 'border-gray-100 text-gray-200 hover:border-gray-300'">
+                                                {{ $i }}
+                                            </button>
+                                        @endfor
+                                    </div>
+                                </div>
+
+                                <div class="mb-8">
+                                    <label class="block text-[11px] font-black uppercase tracking-widest text-gray-400 mb-4">Chia sẻ trải nghiệm của bạn (Không bắt buộc)</label>
+                                    <textarea name="comment" rows="4" class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-6 focus:bg-white focus:ring-1 focus:ring-black outline-none transition-all font-medium placeholder:text-gray-300" placeholder="Chất liệu thế nào? Form dáng có đúng size không?..."></textarea>
+                                </div>
+
+                                <button type="submit" class="apple-btn bg-black text-white hover:bg-gray-800 w-full md:w-auto px-12">
+                                    Gửi đánh giá
+                                </button>
+                            </form>
+                        </div>
+                        @endif
+                    @endauth
+
+                    <!-- Reviews List -->
+                    <div class="space-y-12">
+                        @forelse($product->reviews as $review)
+                            <div class="flex gap-6 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-400 font-black">
+                                    {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                                </div>
+                                <div class="flex-grow border-b border-gray-50 pb-12">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-bold text-black uppercase tracking-tight">{{ $review->user->name }}</h4>
+                                        <span class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">{{ $review->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <div class="flex text-yellow-400 mb-4">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <svg class="w-3.5 h-3.5 {{ $i <= $review->rating ? 'fill-current' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                            </svg>
+                                        @endfor
+                                    </div>
+                                    <p class="text-gray-500 font-medium leading-relaxed italic max-w-2xl">
+                                        {{ $review->comment ?: 'Khách hàng không để lại bình luận.' }}
+                                    </p>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                                <p class="text-gray-400 font-medium italic">Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên chia sẻ!</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .apple-btn {
+            @apply h-14 rounded-xl font-bold uppercase tracking-widest text-xs transition-all duration-300 active:scale-95 flex items-center justify-center;
+        }
+        /* Safe area padding for mobile notches */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+    </style>
+
+    <!-- JSON-LD Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "{{ $product->name }}",
+      "image": "{{ $product->image_url }}",
+      "description": "{{ Str::limit(strip_tags($product->description), 200) }}",
+      "sku": "NT-{{ $product->id }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "Notorious"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ url()->current() }}",
+        "priceCurrency": "VND",
+        "price": "{{ $product->price * (1 - ($product->discount ?? 0) / 100) }}",
+        "availability": "https://schema.org/{{ $product->stock > 0 ? 'InStock' : 'OutOfStock' }}",
+        "seller": {
+          "@type": "Organization",
+          "name": "Notorious"
+        }
+      },
+      @if($product->review_count > 0)
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "{{ $product->average_rating }}",
+        "reviewCount": "{{ $product->review_count }}"
+      }
+      @endif
+    }
+    </script>
 @endsection

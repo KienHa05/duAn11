@@ -4,7 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title', 'The Notorious - Thời trang thể thao tối giản')</title>
+  <!-- Primary Meta Tags -->
+  <title>@yield('title', 'Notorious - Thế giới thời trang thể thao tối giản')</title>
+  <meta name="title" content="@yield('title', 'Notorious - Thế giới thời trang thể thao tối giản')">
+  <meta name="description" content="@yield('meta_description', 'Notorious cung cấp các dòng sản phẩm thời trang thể thao cao cấp with phong cách tối giản. Khám phá bộ sưu tập mới nhất ngay hôm nay.')">
+  <meta name="keywords" content="thời trang thể thao, tối giản, notorious, sportwear, áo thun thể thao, quần thể thao">
+  <meta name="author" content="Notorious Team">
+
+  <!-- Open Graph / Facebook / Zalo -->
+  <meta property="og:type" content="@yield('og_type', 'website')">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:title" content="@yield('title', 'Notorious - Thế giới thời trang thể thao tối giản')">
+  <meta property="og:description" content="@yield('meta_description', 'Notorious cung cấp các dòng sản phẩm thời trang thể thao cao cấp with phong cách tối giản.')">
+  <meta property="og:image" content="@yield('og_image', asset('logo-social.png'))">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="{{ url()->current() }}">
+  <meta property="twitter:title" content="@yield('title', 'Notorious - Thế giới thời trang thể thao tối giản')">
+  <meta property="twitter:description" content="@yield('meta_description', 'Notorious cung cấp các dòng sản phẩm thời trang thể thao cao cấp with phong cách tối giản.')">
+  <meta property="twitter:image" content="@yield('og_image', asset('logo-social.png'))">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ url()->current() }}" />
+
+  <!-- Page Specific Meta Tags -->
+  @stack('meta')
 
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +44,36 @@
 </head>
 
 <body class="bg-white text-black font-sans antialiased selection:bg-black selection:text-white">
-  <div x-data="cartStore()" x-init="init()" @cart-updated.window="updateCart($event)" class="min-h-screen flex flex-col">
+  <div x-data="{ 
+      ...cartStore(),
+      wishlistItems: {{ auth()->check() ? auth()->user()->wishlistProducts->pluck('id')->toJson() : '[]' }},
+      isInWishlist(id) { return this.wishlistItems.includes(id); },
+      async toggleWishlist(id) {
+          try {
+              const response = await fetch('{{ route('wishlist.toggle') }}', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                      'Accept': 'application/json',
+                  },
+                  body: JSON.stringify({ product_id: id })
+              });
+              const data = await response.json();
+              if (data.success) {
+                  if (data.status === 'added') {
+                      this.wishlistItems.push(id);
+                      this.showToast('Đã thêm vào danh sách yêu thích');
+                  } else {
+                      this.wishlistItems = this.wishlistItems.filter(i => i !== id);
+                      this.showToast('Đã xóa khỏi danh sách yêu thích');
+                  }
+              }
+          } catch (error) {
+              this.showToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
+          }
+      }
+    }" x-init="init()" @cart-updated.window="updateCart($event)" class="min-h-screen flex flex-col">
     <!-- Apple-Style Header -->
     <x-header />
 

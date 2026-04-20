@@ -72,6 +72,12 @@ Route::middleware('auth:web')->group(function () {
     
     // Auth-only order viewing
     Route::get('/orders/{order}', [CheckoutController::class, 'show'])->name('orders.show');
+    // Wishlist
+    Route::get('/wishlist', [\App\Http\Controllers\Client\WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/toggle', [\App\Http\Controllers\Client\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+    // Reviews
+    Route::post('/reviews', [\App\Http\Controllers\Client\ReviewController::class, 'store'])->name('reviews.store');
 });
 
 // =============================================================================
@@ -96,6 +102,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
 Route::prefix('api')->group(function () {
   Route::post('/checkout/migrate-cart', [CheckoutController::class, 'migrateCart']);
   Route::post('/checkout/check-email', [CheckoutController::class, 'checkEmail']);
+  Route::get('/search', [ClientProductController::class, 'searchApi'])->name('api.search');
 });
 
 // STAGE 0: Dev Auth (Emergency Shortcut)

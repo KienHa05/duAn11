@@ -32,11 +32,26 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class)->where('status', 'approved');
+    }
+
     /**
      * Get the product's image URL
      */
     public function getImageUrlAttribute()
     {
         return ImageService::getImageUrl($this->image);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return round($this->reviews()->avg('rating') ?? 0, 1);
+    }
+
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->count();
     }
 }
