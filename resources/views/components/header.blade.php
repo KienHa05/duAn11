@@ -20,17 +20,35 @@
 
       <!-- Search Bar: Perfectly Centered & Aligned -->
       <div class="hidden md:flex flex-1 items-center justify-center px-8 lg:px-12 h-full">
-        <div class="relative w-full max-w-xl group">
-          <input type="text" placeholder="Tìm kiếm sản phẩm đẳng cấp..."
+        <form action="{{ route('home') }}" method="GET" class="relative w-full max-w-xl group" role="search">
+          @if(request('category'))
+            <input type="hidden" name="category" value="{{ request('category') }}">
+          @endif
+          @if(request('sort') && request('sort') !== 'newest')
+            <input type="hidden" name="sort" value="{{ request('sort') }}">
+          @endif
+          @if(request('min_price'))
+            <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+          @endif
+          @if(request('max_price'))
+            <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+          @endif
+          <input
+            id="desktop-search"
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Tìm kiếm sản phẩm đẳng cấp..."
+            autocomplete="off"
             class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-14 text-sm font-medium focus:bg-white focus:border-black focus:ring-0 focus:outline-none transition-all duration-300 placeholder:text-gray-400" />
-          <button
-            class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-black transition-colors border-l border-transparent hover:border-gray-100 group-focus-within:text-black cursor-pointer">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button type="submit"
+            class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-black transition-colors border-l border-transparent hover:border-gray-100 group-focus-within:text-black cursor-pointer" aria-label="Tìm kiếm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </button>
-        </div>
+        </form>
       </div>
 
       <!-- Actions: Balanced & Aligned (H-11 to match Search) -->
@@ -147,18 +165,44 @@
     </div>
 
     <!-- Mobile Integrated Search Bar -->
-    <div x-show="showSearch" x-transition:enter="transition duration-300"
-      x-transition:enter-start="opacity-0 -translate-y-4" class="md:hidden pb-6">
-      <div class="relative">
-        <input type="text" placeholder="Tìm sản phẩm..."
-          class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-12 text-sm focus:border-black focus:outline-none transition-all" />
-        <button class="absolute inset-y-0 right-0 px-4 text-gray-400 cursor-pointer">
+    <div x-show="showSearch" x-cloak
+      x-transition:enter="transition duration-300 ease-out"
+      x-transition:enter-start="opacity-0 -translate-y-2"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition duration-200 ease-in"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-2"
+      class="md:hidden pb-4 pt-1">
+      <form action="{{ route('home') }}" method="GET" class="relative" role="search">
+        @if(request('category'))
+          <input type="hidden" name="category" value="{{ request('category') }}">
+        @endif
+        @if(request('sort') && request('sort') !== 'newest')
+          <input type="hidden" name="sort" value="{{ request('sort') }}">
+        @endif
+        @if(request('min_price'))
+          <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+        @endif
+        @if(request('max_price'))
+          <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+        @endif
+        <input
+          id="mobile-search"
+          type="text"
+          name="search"
+          value="{{ request('search') }}"
+          placeholder="Tìm sản phẩm..."
+          autocomplete="off"
+          x-ref="mobileSearchInput"
+          @if(request('search')) autofocus @endif
+          class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-12 text-sm font-medium focus:bg-white focus:border-black focus:outline-none transition-all" />
+        <button type="submit" class="absolute inset-y-0 right-0 px-4 text-gray-400 hover:text-black transition-colors cursor-pointer" aria-label="Tìm kiếm">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </header>
