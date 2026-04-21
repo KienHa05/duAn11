@@ -196,13 +196,14 @@
 
                     <div class="flex gap-4">
                         <button 
-                            @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, quantity)"
+                            @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, '{{ $product->image_url }}', quantity)"
                             :disabled="stock <= 0"
                             class="flex-1 btn h-14 bg-white border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white hover:shadow-xl rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group">
                             <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                             Thêm vào giỏ hàng
                         </button>
                         <button 
+                            @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, '{{ $product->image_url }}', quantity); window.location.href='{{ route('client.cart.index') }}'"
                             :disabled="stock <= 0"
                             class="flex-1 btn h-14 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white hover:shadow-lg hover:shadow-blue-500/30 rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1">
                             Mua Ngay
@@ -276,13 +277,14 @@
     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-base-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-40 px-4 py-3 pb-safe transform transition-transform" x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 100)">
         <div class="flex items-center gap-3">
             <button 
-                @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, 1)"
+                @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, '{{ $product->image_url }}', quantity)"
                 :disabled="stock <= 0"
                 class="btn flex-1 bg-white border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white rounded-xl font-bold rounded-xl min-h-12 h-12 shadow-sm disabled:opacity-50">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
                 Thêm
             </button>
             <button 
+                @click="addToCart({{ $product->id }}, '{{ $product->name }}', currentPrice, '{{ $product->image_url }}', quantity); window.location.href='{{ route('client.cart.index') }}'"
                 :disabled="stock <= 0"
                 class="btn flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20 font-bold rounded-xl min-h-12 h-12 disabled:opacity-50">
                 Mua Ngay
@@ -407,13 +409,6 @@
         </div>
     </section>
 
-    <style>
-        .apple-btn {
-            @apply h-14 rounded-xl font-bold uppercase tracking-widest text-xs transition-all duration-300 active:scale-95 flex items-center justify-center;
-        }
-        /* Safe area padding for mobile notches */
-        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
-    </style>
 
     <!-- JSON-LD Structured Data for SEO -->
     <script type="application/ld+json">

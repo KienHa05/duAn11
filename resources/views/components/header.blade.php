@@ -50,7 +50,7 @@
             x-model="query"
             @input.debounce.300ms="search"
             @focus="if(query.length >= 2) showResults = true"
-            placeholder="Tìm kiếm sản phẩm đẳng cấp..."
+            placeholder="Tìm kiếm sản phẩm..."
             class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-14 text-sm font-medium focus:bg-white focus:border-black focus:ring-0 focus:outline-none transition-all duration-300 placeholder:text-gray-400" />
           
           <button

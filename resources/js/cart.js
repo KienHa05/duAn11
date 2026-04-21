@@ -44,19 +44,20 @@ window.cartStore = function() {
          * Add product to cart (or increase quantity if exists)
          * Returns: 'added' = new product, 'increased' = existing product quantity increased
          */
-        addToCart(productId, name, price, imageUrl = '') {
+        addToCart(productId, name, price, imageUrl = '', quantity = 1) {
             const existingItem = this.items.find(item => item.id === productId);
+            const qtyToAdd = parseInt(quantity) || 1;
 
             if (existingItem) {
                 // Product exists - increase quantity
-                existingItem.quantity++;
+                existingItem.quantity += qtyToAdd;
                 this.saveCart();
                 this.updateTotals();
 
-                console.log('⬆️ Increased quantity:', { productId, name, newQuantity: existingItem.quantity });
+                console.log('⬆️ Increased quantity:', { productId, name, addedQuantity: qtyToAdd, newTotalQuantity: existingItem.quantity });
 
                 // Show toast for quantity increase
-                this.showToast(`Đã tăng số lượng "${name}"`);
+                this.showToast(`Đã cập nhật số lượng "${name}"`);
                 return 'increased';
             } else {
                 // New product - add to cart
@@ -65,13 +66,13 @@ window.cartStore = function() {
                     name: name,
                     price: price,
                     imageUrl: imageUrl,
-                    quantity: 1
+                    quantity: qtyToAdd
                 });
 
                 this.saveCart();
                 this.updateTotals();
 
-                console.log('✅ Added new product:', { productId, name, price, imageUrl });
+                console.log('✅ Added new product:', { productId, name, price, imageUrl, quantity: qtyToAdd });
                 console.log('📦 Cart:', this.items);
 
                 // Show toast for new product
@@ -84,7 +85,7 @@ window.cartStore = function() {
          * Add product to cart with anti-spam protection (for homepage)
          * Prevents double-click by disabling button during add
          */
-        addToCartWithLoading(productId, name, price, imageUrl = '') {
+        addToCartWithLoading(productId, name, price, imageUrl = '', quantity = 1) {
             // Prevent spam clicks
             if (this.isAdding) {
                 return;
@@ -93,12 +94,12 @@ window.cartStore = function() {
             this.isAdding = true;
 
             // Add to cart (handles both new and existing products)
-            this.addToCart(productId, name, price, imageUrl);
+            this.addToCart(productId, name, price, imageUrl, quantity);
 
             // Re-enable after a short delay
             setTimeout(() => {
                 this.isAdding = false;
-            }, 300);
+            }, 1000);
         },
 
         /**

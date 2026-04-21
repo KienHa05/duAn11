@@ -28,6 +28,7 @@
         @endif
 
         <!-- Status: In Stock -->
+        @if($product->stock > 0)
         <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] z-10"></div>
         @else
         <div class="absolute top-4 right-4 bg-gray-800/80 text-white text-[9px] uppercase font-black px-2.5 py-1 rounded-full backdrop-blur-sm z-10">
@@ -103,7 +104,7 @@
                     @click.stop="addToCartWithLoading($el.dataset.productId, $el.dataset.productName, parseFloat($el.dataset.price), $el.dataset.imageUrl)"
                     :disabled="{{ ($product->stock > 0) ? 'false' : 'true' }} || isAdding"
                     class="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-black text-black hover:bg-black hover:text-white transition-all transform active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 group/cart cursor-pointer shadow-sm"
-                    :title="disabled ? (isAdding ? 'Đang thêm...' : 'Sản phẩm hết hàng') : 'Thêm vào giỏ hàng'"
+                    :title="{{ ($product->stock <= 0) ? 'true' : 'false' }} ? 'Sản phẩm hết hàng' : (isAdding ? 'Đang thêm...' : 'Thêm vào giỏ hàng')"
                     data-product-id="{{ $product->id }}"
                     data-product-name="{{ $product->name }}"
                     data-price="{{ $product->price * (1 - ($product->discount ?? 0) / 100) }}"
@@ -115,7 +116,6 @@
                 </button>
             </div>
         </div>
-    </div>
 
     <!-- Alpine.js Data Bridge -->
     <div data-stock="{{ $product->stock }}" class="hidden"></div>
