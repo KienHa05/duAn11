@@ -44,20 +44,35 @@ window.cartStore = function() {
          * Add product to cart (or increase quantity if exists)
          * Returns: 'added' = new product, 'increased' = existing product quantity increased
          */
+<<<<<<< HEAD
         addToCart(productId, name, price, imageUrl = '', quantity = 1) {
+=======
+        addToCart(productId, name, price, imageUrl = '', quantity = 1, showToast = true) {
+            const qty = parseInt(quantity) || 1;
+>>>>>>> 6063bff2513b99138df669018ffc04ab4d83f58f
             const existingItem = this.items.find(item => item.id === productId);
             const qtyToAdd = parseInt(quantity) || 1;
 
             if (existingItem) {
                 // Product exists - increase quantity
+<<<<<<< HEAD
                 existingItem.quantity += qtyToAdd;
+=======
+                existingItem.quantity += qty;
+>>>>>>> 6063bff2513b99138df669018ffc04ab4d83f58f
                 this.saveCart();
                 this.updateTotals();
 
                 console.log('⬆️ Increased quantity:', { productId, name, addedQuantity: qtyToAdd, newTotalQuantity: existingItem.quantity });
 
                 // Show toast for quantity increase
+<<<<<<< HEAD
                 this.showToast(`Đã cập nhật số lượng "${name}"`);
+=======
+                if (showToast) {
+                    this.showToast(`Đã cập nhật số lượng của "${name}"`);
+                }
+>>>>>>> 6063bff2513b99138df669018ffc04ab4d83f58f
                 return 'increased';
             } else {
                 // New product - add to cart
@@ -66,7 +81,11 @@ window.cartStore = function() {
                     name: name,
                     price: price,
                     imageUrl: imageUrl,
+<<<<<<< HEAD
                     quantity: qtyToAdd
+=======
+                    quantity: qty
+>>>>>>> 6063bff2513b99138df669018ffc04ab4d83f58f
                 });
 
                 this.saveCart();
@@ -76,9 +95,37 @@ window.cartStore = function() {
                 console.log('📦 Cart:', this.items);
 
                 // Show toast for new product
-                this.showToast(`Đã thêm "${name}" vào giỏ hàng`);
+                if (showToast) {
+                    this.showToast(`Đã thêm "${name}" vào giỏ hàng`);
+                }
                 return 'added';
             }
+        },
+
+        /**
+         * Buy Now: Replace cart with only this product and redirect to checkout.
+         * Uses a dedicated localStorage key 'buy_now' so it doesn't pollute the main cart.
+         * The checkout page will prioritise 'buy_now' over 'cart' if the key exists.
+         */
+        buyNow(productId, name, price, imageUrl = '', quantity = 1) {
+            const qty = parseInt(quantity) || 1;
+
+            // Build a single-item cart for "Buy Now"
+            const buyNowCart = [{
+                id: productId,
+                name: name,
+                price: price,
+                imageUrl: imageUrl,
+                quantity: qty,
+            }];
+
+            // Persist to a dedicated key so the checkout page can pick it up
+            localStorage.setItem('buy_now_cart', JSON.stringify(buyNowCart));
+
+            // Small delay to guarantee localStorage write before navigation
+            setTimeout(() => {
+                window.location.href = '/checkout';
+            }, 50);
         },
 
         /**

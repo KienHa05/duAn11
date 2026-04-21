@@ -18,12 +18,12 @@
         </a>
       </div>
 
-      <!-- Search Bar: Perfectly Centered & Aligned -->
-      <div class="hidden md:flex flex-1 items-center justify-center px-8 lg:px-12 h-full" 
-           x-data="{ 
-              query: '', 
-              results: { products: [], categories: [] }, 
-              loading: false, 
+      <!-- Search Bar: Desktop Live Search -->
+      <div class="hidden md:flex flex-1 items-center justify-center px-8 lg:px-12 h-full"
+           x-data="{
+              query: '{{ request('search') }}',
+              results: { products: [], categories: [] },
+              loading: false,
               showResults: false,
               async search() {
                   if (this.query.length < 2) {
@@ -46,14 +46,18 @@
            @click.away="showResults = false"
       >
         <div class="relative w-full max-w-xl group">
-          <input type="text" 
+          <input type="text"
+            id="desktop-search"
             x-model="query"
             @input.debounce.300ms="search"
             @focus="if(query.length >= 2) showResults = true"
+            @keyup.enter="window.location.href='{{ route('home') }}?search=' + encodeURIComponent(query)"
             placeholder="Tìm kiếm sản phẩm..."
+            autocomplete="off"
             class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-14 text-sm font-medium focus:bg-white focus:border-black focus:ring-0 focus:outline-none transition-all duration-300 placeholder:text-gray-400" />
-          
-          <button
+
+          <button @click="window.location.href='{{ route('home') }}?search=' + encodeURIComponent(query)"
+            aria-label="Tìm kiếm"
             class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-black transition-colors border-l border-transparent hover:border-gray-100 group-focus-within:text-black cursor-pointer">
             <template x-if="!loading">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,13 +71,13 @@
           </button>
 
           <!-- Search Results Dropdown (Apple Aesthetic) -->
-          <div x-show="showResults" 
+          <div x-show="showResults"
                x-transition:enter="transition ease-out duration-200"
                x-transition:enter-start="opacity-0 translate-y-4"
                x-transition:enter-end="opacity-100 translate-y-0"
                class="absolute top-full left-0 right-0 mt-4 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-2xl overflow-hidden z-[100]"
                style="display: none;">
-            
+
             <div class="p-2">
                 <!-- Categories -->
                 <template x-if="results.categories && results.categories.length > 0">
@@ -174,16 +178,16 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div x-show="open" 
+            <div x-show="open"
               x-transition:enter="transition ease-out duration-200"
               x-transition:enter-start="opacity-0 scale-95 translate-y-2"
               x-transition:enter-end="opacity-100 scale-100 translate-y-0"
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 scale-100 translate-y-0"
               x-transition:leave-end="opacity-0 scale-95 translate-y-2"
-              class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[60] overflow-hidden" 
+              class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[60] overflow-hidden"
               style="display: none;">
-              
+
               <div class="px-5 py-4 border-b border-gray-50 mb-1 bg-gray-50/50">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Khách hàng</p>
                 <p class="text-[11px] font-bold text-black truncate mt-1">{{ Auth::guard('web')->user()->email }}</p>
@@ -209,6 +213,7 @@
                 </svg>
                 Danh sách yêu thích
               </a>
+
               <div class="mt-1 pt-1 border-t border-gray-50">
                 <form action="{{ route('logout') }}" method="POST">
                   @csrf
@@ -252,14 +257,15 @@
           </div>
         </a>
         @endauth
-        <!-- Cart Button: Ghost Style H-11 (Perfectly Matched) -->
+
+        <!-- Cart Button -->
         <a href="{{ route('client.cart.index') }}"
           class="relative flex items-center gap-2 h-11 px-6 text-gray-700 hover:text-black hover:bg-gray-50 rounded-xl transition-all font-bold text-sm tracking-tight cursor-pointer active:scale-95 whitespace-nowrap">
           <div class="relative flex items-center">
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-              </path>
+            </path>
             </svg>
             <span
               class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-lg"
@@ -272,18 +278,43 @@
     </div>
 
     <!-- Mobile Integrated Search Bar -->
-    <div x-show="showSearch" x-transition:enter="transition duration-300"
-      x-transition:enter-start="opacity-0 -translate-y-4" class="md:hidden pb-6">
-      <div class="relative">
-        <input type="text" placeholder="Tìm sản phẩm..."
-          class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-12 text-sm focus:border-black focus:outline-none transition-all" />
-        <button class="absolute inset-y-0 right-0 px-4 text-gray-400 cursor-pointer">
+    <div x-show="showSearch" x-cloak
+      x-transition:enter="transition duration-300 ease-out"
+      x-transition:enter-start="opacity-0 -translate-y-2"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition duration-200 ease-in"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-2"
+      class="md:hidden pb-4 pt-1">
+      <form action="{{ route('home') }}" method="GET" class="relative" role="search">
+        @if(request('category'))
+          <input type="hidden" name="category" value="{{ request('category') }}">
+        @endif
+        @if(request('sort') && request('sort') !== 'newest')
+          <input type="hidden" name="sort" value="{{ request('sort') }}">
+        @endif
+        @if(request('min_price'))
+          <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+        @endif
+        @if(request('max_price'))
+          <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+        @endif
+        <input
+          id="mobile-search"
+          type="text"
+          name="search"
+          value="{{ request('search') }}"
+          placeholder="Tìm sản phẩm..."
+          autocomplete="off"
+          x-ref="mobileSearchInput"
+          class="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-12 text-sm font-medium focus:bg-white focus:border-black focus:outline-none transition-all" />
+        <button type="submit" class="absolute inset-y-0 right-0 px-4 text-gray-400 hover:text-black transition-colors cursor-pointer" aria-label="Tìm kiếm">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </header>
