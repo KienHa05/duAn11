@@ -46,7 +46,9 @@ window.cartStore = function() {
          */
         addToCart(productId, name, price, imageUrl = '', quantity = 1, showToast = true) {
             const qty = parseInt(quantity) || 1;
-            const existingItem = this.items.find(item => item.id === productId);
+            // Ensure ID is compared safely regardless of whether it was passed as string or int
+            const searchId = productId.toString();
+            const existingItem = this.items.find(item => item.id.toString() === searchId);
 
             if (existingItem) {
                 // Product exists - increase quantity
