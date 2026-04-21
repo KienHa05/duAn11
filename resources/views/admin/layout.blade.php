@@ -37,17 +37,15 @@
             <label for="drawer-toggle" class="drawer-overlay"></label>
             <aside class="min-h-full w-80 bg-base-100 text-base-content border-r border-base-200">
                 <div class="p-5 sticky top-0 bg-base-100 z-10 border-b border-base-200">
-                    <div class="flex items-center gap-3">
-                        <div class="avatar placeholder">
-                            <div class="w-10 rounded-lg bg-primary text-primary-content">
-                                <span class="font-bold">TN</span>
-                            </div>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group px-1">
+                        <div class="w-10 h-10 flex flex-shrink-0 items-center justify-center rounded-xl bg-black text-white font-black text-lg shadow-sm transition-transform group-hover:scale-105 cursor-pointer">
+                            N
                         </div>
-                        <div class="min-w-0">
-                            <h2 class="text-lg font-bold leading-tight">The Notorious</h2>
-                            <p class="text-xs opacity-70 truncate">Admin Dashboard</p>
+                        <div class="min-w-0 flex flex-col justify-center cursor-pointer">
+                            <span class="text-xl font-black tracking-tighter uppercase leading-none text-black">Notorious</span>
+                            <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 mt-1">Admin Dashboard</span>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="p-4">

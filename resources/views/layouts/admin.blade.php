@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #667eea;
+            --primary-color: #000000;
             --sidebar-width: 280px;
-            --sidebar-bg: #2c3e50;
+            --sidebar-bg: #000000;
         }
 
         * {
@@ -131,7 +131,7 @@
         }
 
         .toggle-btn:hover {
-            color: #667eea;
+            color: #333333;
         }
 
         .navbar-brand-text {
@@ -238,8 +238,8 @@
         }
 
         .btn-primary:hover {
-            background-color: #5568d3;
-            border-color: #5568d3;
+            background-color: #333333;
+            border-color: #333333;
         }
 
         .btn-sm {
@@ -258,7 +258,7 @@
         .form-control:focus,
         .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
         }
 
         .form-label {
@@ -344,9 +344,13 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="{{ route('admin.products.index') }}" class="sidebar-brand">
-                <i class="fas fa-shield-alt"></i>
-                <span>The Notorious</span>
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand" style="display: flex; align-items: center; gap: 12px; text-decoration: none; padding: 10px 0;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background-color: #fff; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; flex-shrink: 0;">
+                    N
+                </div>
+                <span style="font-size: 1.25rem; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase; color: #fff;">
+                    Notorious
+                </span>
             </a>
         </div>
 
