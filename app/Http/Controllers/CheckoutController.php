@@ -258,6 +258,27 @@ class CheckoutController extends Controller
     }
 
     /**
+     * Cancel an order (Customer)
+     */
+    public function cancel(Order $order)
+    {
+        // Check authorization
+        if ($order->user_id !== Auth::guard('web')->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Chỉ có thể hủy đơn hàng ở trạng thái chờ xử lý.');
+        }
+
+        $order->update([
+            'status' => 'cancelled'
+        ]);
+
+        return back()->with('success', 'Đã hủy đơn hàng thành công.');
+    }
+
+    /**
      * Generate unique order number
      * Format: ORD-YYMMDD-XXXXX
      */

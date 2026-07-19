@@ -34,7 +34,7 @@
                 <div class="space-y-2">
                     <div class="flex items-center justify-between ml-1">
                         <label for="password" class="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500">Mật khẩu</label>
-                        <a href="#" class="text-[10px] font-black uppercase tracking-wider text-gray-400 hover:text-black transition-colors">Quên mật khẩu?</a>
+                        <a href="{{ route('password.request') }}" class="text-[10px] font-black uppercase tracking-wider text-gray-400 hover:text-black transition-colors">Quên mật khẩu?</a>
                     </div>
                     <input type="password" name="password" id="password" required
                         class="w-full h-14 bg-gray-50 border border-gray-100 rounded-2xl px-6 text-sm font-bold focus:bg-white focus:border-black focus:ring-4 focus:ring-black/5 transition-all outline-none placeholder:text-gray-300"

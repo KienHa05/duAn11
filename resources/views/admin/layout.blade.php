@@ -98,6 +98,14 @@
                             </a>
                         </li>
 
+                        <!-- Customers -->
+                        <li>
+                            <a href="{{ route('admin.customers.index') }}" class="{{ request()->routeIs('admin.customers.*') ? 'active' : '' }}">
+                                <x-heroicon-o-users class="w-5 h-5" />
+                                <span>Quản Lý Khách Hàng</span>
+                            </a>
+                        </li>
+
                     </ul>
 
                     <div class="divider my-4"></div>

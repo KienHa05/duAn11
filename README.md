@@ -1,58 +1,76 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# E-commerce Laravel Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dự án này đang được phát triển theo mô hình e-commerce cơ bản với Laravel, tích hợp giao diện người dùng, giỏ hàng, thanh toán/đặt hàng, quản trị admin và thống kê bán hàng.
 
-## About Laravel
+## Tình trạng tiến độ
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Dự án đã hoàn thành các module cốt lõi sau:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Giao diện khách hàng
+- Trang chủ sản phẩm
+- Trang chi tiết sản phẩm
+- Tìm kiếm và lọc sản phẩm cơ bản
+- Hiển thị danh mục sản phẩm
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Giỏ hàng và đặt hàng
+- Thêm sản phẩm vào giỏ hàng
+- Cập nhật số lượng sản phẩm trong giỏ
+- Xóa sản phẩm khỏi giỏ
+- Hỗ trợ đặt hàng cho khách vãng lai và khách đã đăng nhập
+- Xử lý lưu thông tin đơn hàng và mã tracking
 
-## Learning Laravel
+### 3. Tài khoản và xác thực
+- Đăng nhập khách hàng
+- Đăng ký tài khoản khách hàng
+- Quản lý thông tin hồ sơ người dùng
+- Xem lịch sử đơn hàng của người dùng
+- Đăng nhập quản trị viên riêng biệt
+- Phân quyền admin và client
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. Quản trị Admin
+- Dashboard quản trị
+- Quản lý sản phẩm: thêm, sửa, xóa, khôi phục, xóa vĩnh viễn
+- Quản lý danh mục
+- Quản lý đơn hàng: xem, chỉnh sửa trạng thái, cập nhật vận chuyển, hủy đơn
+- Thống kê bán hàng: doanh thu, số đơn hàng, sản phẩm bán chạy/slow seller, phân bố trạng thái đơn
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. Tính năng bổ sung
+- Upload ảnh cho sản phẩm
+- Soft delete cho sản phẩm
+- Tích hợp các route API cho checkout và kiểm tra email
+- Hỗ trợ tracking đơn hàng
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Công nghệ sử dụng
+- Laravel 13
+- PHP 8.3
+- Vite + Tailwind CSS + DaisyUI
+- Alpine.js, AOS, GSAP, Swiper
+- MySQL / Laravel migrations
 
-## Agentic Development
+## Cách chạy dự án
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Yêu cầu
+- PHP 8.3+
+- Composer
+- Node.js + npm
+- Database sẵn sàng
 
+### Bước chạy
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Điểm hiện tại
+Dự án đã đi được tới giai đoạn “core e-commerce flow” hoàn chỉnh ở phía khách hàng và quản trị. Các chức năng chính về mua hàng, quản lý đơn hàng và thống kê admin đã được triển khai.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Kế hoạch tiếp theo
+- Tích hợp cổng thanh toán thực tế
+- Gửi email thông báo đặt hàng và trạng thái đơn hàng
+- Hoàn thiện test tự động
+- Tối ưu trải nghiệm UI/UX và bảo mật

@@ -4,12 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\CartController as ClientCartController;
 use App\Http\Controllers\Client\TrackingController;
 use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 // =============================================================================
 // PUBLIC ROUTES
@@ -48,6 +51,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
 // Admin Auth (Separate entry)
@@ -72,6 +80,7 @@ Route::middleware('auth:web')->group(function () {
     
     // Auth-only order viewing
     Route::get('/orders/{order}', [CheckoutController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [CheckoutController::class, 'cancel'])->name('orders.cancel');
 });
 
 // =============================================================================
@@ -90,6 +99,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
   Route::resource('orders', AdminOrderController::class, ['only' => ['index', 'show', 'edit', 'update']]);
   Route::post('/orders/{order}/shipment', [AdminOrderController::class, 'updateShipment'])->name('orders.shipment');
   Route::post('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
+
+  Route::resource('customers', AdminCustomerController::class, ['only' => ['index', 'show', 'update']]);
 });
 
 // API routes

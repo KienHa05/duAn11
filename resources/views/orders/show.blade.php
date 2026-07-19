@@ -186,6 +186,15 @@
 
                     <!-- Action Buttons -->
                     <div class="space-y-2">
+                        @if($order->status === 'pending' && $order->user_id === Auth::guard('web')->id())
+                            <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                @csrf
+                                <button type="submit" class="w-full px-4 py-3 bg-red-50 border border-red-200 text-red-600 font-semibold rounded-lg hover:bg-red-600 hover:text-white transition text-center">
+                                    ❌ Hủy Đơn Hàng
+                                </button>
+                            </form>
+                        @endif
+
                         <a href="{{ route('client.cart.index') }}" class="block w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-center">
                             ← Tiếp Tục Mua Hàng
                         </a>

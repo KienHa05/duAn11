@@ -51,6 +51,14 @@
 
                             <!-- Action -->
                             <div class="flex items-center gap-4">
+                                @if($order->status === 'pending')
+                                    <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                        @csrf
+                                        <button type="submit" class="h-12 px-6 flex items-center justify-center bg-white border-2 border-red-50 text-red-500 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all active:scale-95">
+                                            Hủy đơn
+                                        </button>
+                                    </form>
+                                @endif
                                 <a href="{{ route('orders.show', $order) }}" 
                                     class="h-12 px-8 flex items-center justify-center bg-gray-50 hover:bg-black hover:text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all active:scale-95">
                                     Chi tiết <span class="hidden sm:inline ml-1">đơn hàng</span>
