@@ -15,6 +15,7 @@ class OrderController extends Controller
     {
         $orders = Order::with(['user', 'shipment', 'latestPayment'])
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.orders.index', compact('orders'));

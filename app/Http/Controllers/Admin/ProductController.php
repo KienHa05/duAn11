@@ -13,7 +13,10 @@ class ProductController extends Controller
     public function index()
     {
         // Admin list: only show active products (soft-deleted items are hidden)
-        $products = Product::with('category')->paginate(10);
+        $products = Product::with('category')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -112,7 +115,7 @@ class ProductController extends Controller
     public function forceDelete($id)
     {
         $product = Product::withTrashed()->findOrFail($id);
-        
+
         // Delete image if exists
         if ($product->image) {
             ImageService::deleteImage($product->image);
