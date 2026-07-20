@@ -15,7 +15,7 @@
         <div class="bg-white rounded-[2rem] shadow-xl border border-gray-100 p-8 md:p-10">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-black tracking-tighter text-black uppercase">Quên mật khẩu</h1>
-                <p class="text-gray-400 mt-2 text-[11px] font-medium tracking-wide uppercase leading-relaxed">Nhập email của bạn và chúng tôi sẽ gửi cho bạn một đường dẫn để đặt lại mật khẩu mới.</p>
+                <p class="text-gray-400 mt-2 text-[11px] font-medium tracking-wide uppercase leading-relaxed">Nhập email của bạn và chúng tôi sẽ gửi cho bạn mã OTP xác thực gồm 6 chữ số.</p>
             </div>
 
             @if (session('success'))
@@ -40,7 +40,7 @@
                 <button type="submit" 
                     class="w-full h-14 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-[0.98] shadow-lg shadow-black/10 mt-4 group">
                     <span class="flex items-center justify-center gap-2">
-                        Gửi link khôi phục
+                        Gửi mã OTP
                         <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>

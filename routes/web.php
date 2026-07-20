@@ -11,8 +11,7 @@ use App\Http\Controllers\Client\TrackingController;
 use App\Http\Controllers\CheckoutController;
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\OtpPasswordResetController;
 
 // =============================================================================
 // PUBLIC ROUTES
@@ -52,10 +51,15 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-    Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
+    Route::get('forgot-password', [OtpPasswordResetController::class, 'requestForm'])->name('password.request');
+    Route::post('forgot-password', [OtpPasswordResetController::class, 'sendOtp'])->name('password.email');
+    
+    Route::get('verify-otp', [OtpPasswordResetController::class, 'verifyForm'])->name('password.verify.form');
+    Route::post('verify-otp', [OtpPasswordResetController::class, 'verifyOtp'])->name('password.verify.submit');
+    Route::post('resend-otp', [OtpPasswordResetController::class, 'resendOtp'])->name('password.resend');
+    
+    Route::get('reset-password', [OtpPasswordResetController::class, 'resetForm'])->name('password.reset.form');
+    Route::post('reset-password', [OtpPasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 // Admin Auth (Separate entry)
