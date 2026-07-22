@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
 use App\Models\Order;
+use App\Models\User;
 use App\Policies\OrderPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,28 @@ class AuthServiceProvider extends ServiceProvider
    */
   public function boot(): void
   {
-    //
+    Gate::define('access-dashboard', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('dashboard'));
+    });
+
+    Gate::define('access-products', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('products'));
+    });
+
+    Gate::define('access-categories', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('categories'));
+    });
+
+    Gate::define('access-orders', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('orders'));
+    });
+
+    Gate::define('access-customers', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('customers'));
+    });
+
+    Gate::define('access-admin-users', function (?User $user) {
+      return $user && $user->is_admin && $user->isSuperAdmin();
+    });
   }
 }
