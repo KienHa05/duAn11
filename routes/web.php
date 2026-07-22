@@ -53,11 +53,11 @@ Route::middleware('guest')->group(function () {
 
     Route::get('forgot-password', [OtpPasswordResetController::class, 'requestForm'])->name('password.request');
     Route::post('forgot-password', [OtpPasswordResetController::class, 'sendOtp'])->name('password.email');
-    
+
     Route::get('verify-otp', [OtpPasswordResetController::class, 'verifyForm'])->name('password.verify.form');
     Route::post('verify-otp', [OtpPasswordResetController::class, 'verifyOtp'])->name('password.verify.submit');
     Route::post('resend-otp', [OtpPasswordResetController::class, 'resendOtp'])->name('password.resend');
-    
+
     Route::get('reset-password', [OtpPasswordResetController::class, 'resetForm'])->name('password.reset.form');
     Route::post('reset-password', [OtpPasswordResetController::class, 'resetPassword'])->name('password.update');
 });
@@ -77,11 +77,11 @@ Route::post('/admin/logout', [AuthController::class, 'adminLogout'])->middleware
 Route::middleware('auth:web')->group(function () {
     // Current user's orders
     Route::get('/my-orders', [CheckoutController::class, 'history'])->name('orders.history');
-    
+
     // User Profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
-    
+
     // Auth-only order viewing
     Route::get('/orders/{order}', [CheckoutController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [CheckoutController::class, 'cancel'])->name('orders.cancel');
@@ -105,6 +105,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
   Route::post('/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])->name('orders.cancel');
 
   Route::resource('customers', AdminCustomerController::class, ['only' => ['index', 'show', 'update']]);
+
+  Route::get('/admin-users', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('admin-users.index');
+  Route::put('/admin-users/{adminUser}', [\App\Http\Controllers\Admin\AdminUserController::class, 'update'])->name('admin-users.update');
 });
 
 // API routes

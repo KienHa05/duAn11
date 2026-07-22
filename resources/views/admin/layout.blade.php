@@ -58,6 +58,16 @@
                             </a>
                         </li>
 
+                        @php
+                            $adminUser = Auth::guard('admin')->user();
+                            $canManageProducts = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('products'));
+                            $canManageCategories = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('categories'));
+                            $canManageOrders = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('orders'));
+                            $canManageCustomers = $adminUser && $adminUser->isSuperAdmin();
+                            $canManageAdminUsers = $adminUser && $adminUser->isSuperAdmin();
+                        @endphp
+
+                        @if($canManageProducts)
                         <!-- Products Management -->
                         <li>
                             <details class="{{ request()->routeIs('admin.products.*') ? 'open' : '' }}">
@@ -81,7 +91,9 @@
                                 </ul>
                             </details>
                         </li>
+                        @endif
 
+                        @if($canManageCategories)
                         <!-- Categories -->
                         <li>
                             <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
@@ -89,7 +101,9 @@
                                 <span>Quản Lý Danh mục</span>
                             </a>
                         </li>
+                        @endif
 
+                        @if($canManageOrders)
                         <!-- Orders -->
                         <li>
                             <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
@@ -97,7 +111,9 @@
                                 <span>Quản Lý Đơn Hàng</span>
                             </a>
                         </li>
+                        @endif
 
+                        @if($canManageCustomers)
                         <!-- Customers -->
                         <li>
                             <a href="{{ route('admin.customers.index') }}" class="{{ request()->routeIs('admin.customers.*') ? 'active' : '' }}">
@@ -105,6 +121,16 @@
                                 <span>Quản Lý Khách Hàng</span>
                             </a>
                         </li>
+                        @endif
+
+                        @if($canManageAdminUsers)
+                        <li>
+                            <a href="{{ route('admin.admin-users.index') }}" class="{{ request()->routeIs('admin.admin-users.*') ? 'active' : '' }}">
+                                <x-heroicon-o-shield-check class="w-5 h-5" />
+                                <span>Quản lý tài khoản Admin</span>
+                            </a>
+                        </li>
+                        @endif
 
                     </ul>
 
@@ -121,9 +147,12 @@
                             <div class="min-w-0">
                                 <p class="text-xs font-black uppercase tracking-widest opacity-50">Đang quản trị</p>
                                 <p class="text-sm font-bold truncate">{{ Auth::guard('admin')->user()->name }}</p>
+                                <p class="text-xs mt-1 font-semibold uppercase tracking-wide text-primary">
+                                    {{ str_replace('_', ' ', Auth::guard('admin')->user()->role ?: 'super_admin') }}
+                                </p>
                             </div>
                         </div>
-                        
+
                         <form action="{{ route('admin.logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-error btn-sm btn-block gap-2 rounded-xl text-white font-bold">
