@@ -36,6 +36,10 @@ class AuthServiceProvider extends ServiceProvider
       return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('categories'));
     });
 
+    Gate::define('access-trash', function (?User $user) {
+      return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('products') || $user->hasPermission('categories'));
+    });
+
     Gate::define('access-orders', function (?User $user) {
       return $user && $user->is_admin && ($user->isSuperAdmin() || $user->hasPermission('orders'));
     });

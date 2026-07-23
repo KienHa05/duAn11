@@ -62,6 +62,7 @@
                             $adminUser = Auth::guard('admin')->user();
                             $canManageProducts = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('products'));
                             $canManageCategories = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('categories'));
+                            $canManageTrash = $canManageProducts || $canManageCategories;
                             $canManageOrders = $adminUser && ($adminUser->isSuperAdmin() || $adminUser->hasPermission('orders'));
                             $canManageCustomers = $adminUser && $adminUser->isSuperAdmin();
                             $canManageAdminUsers = $adminUser && $adminUser->isSuperAdmin();
@@ -99,6 +100,16 @@
                             <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                                 <x-heroicon-o-tag class="w-5 h-5" />
                                 <span>Quản Lý Danh mục</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if($canManageTrash)
+                        <!-- Trash -->
+                        <li>
+                            <a href="{{ route('admin.trash.index') }}" class="{{ request()->routeIs('admin.trash.*') ? 'active' : '' }}">
+                                <x-heroicon-o-trash class="w-5 h-5" />
+                                <span>Thùng rác</span>
                             </a>
                         </li>
                         @endif

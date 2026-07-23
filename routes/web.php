@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
+use App\Http\Controllers\Admin\TrashController as AdminTrashController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\CartController as ClientCartController;
 use App\Http\Controllers\Client\TrackingController;
@@ -93,6 +94,12 @@ Route::middleware('auth:web')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
   Route::get('/', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('dashboard');
   Route::get('/api/analytics/data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('api.analytics.data');
+
+  Route::get('/trash', [AdminTrashController::class, 'index'])->name('trash.index');
+  Route::post('/trash/products/{id}/restore', [AdminTrashController::class, 'restoreProduct'])->name('trash.products.restore');
+  Route::delete('/trash/products/{id}/force-delete', [AdminTrashController::class, 'forceDeleteProduct'])->name('trash.products.force-delete');
+  Route::post('/trash/categories/{id}/restore', [AdminTrashController::class, 'restoreCategory'])->name('trash.categories.restore');
+  Route::delete('/trash/categories/{id}/force-delete', [AdminTrashController::class, 'forceDeleteCategory'])->name('trash.categories.force-delete');
 
   Route::resource('products', AdminProductController::class);
   Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
