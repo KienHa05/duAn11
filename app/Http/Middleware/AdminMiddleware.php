@@ -35,6 +35,10 @@ class AdminMiddleware
             abort(403, 'Bạn không có quyền truy cập quản lý danh mục.');
         }
 
+        if (str_starts_with($request->path(), 'admin/trash') && !$gate->allows('access-trash')) {
+            abort(403, 'Bạn không có quyền truy cập thùng rác.');
+        }
+
         if (str_starts_with($request->path(), 'admin/orders') && !$gate->allows('access-orders')) {
             abort(403, 'Bạn không có quyền truy cập quản lý đơn hàng.');
         }
