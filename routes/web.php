@@ -96,11 +96,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
   Route::get('/api/analytics/data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('api.analytics.data');
 
   Route::get('/trash', [AdminTrashController::class, 'index'])->name('trash.index');
+  Route::post('/trash/products/bulk-restore', [AdminTrashController::class, 'bulkRestoreProducts'])->name('trash.products.bulk-restore');
   Route::post('/trash/products/{id}/restore', [AdminTrashController::class, 'restoreProduct'])->name('trash.products.restore');
   Route::delete('/trash/products/{id}/force-delete', [AdminTrashController::class, 'forceDeleteProduct'])->name('trash.products.force-delete');
   Route::post('/trash/categories/{id}/restore', [AdminTrashController::class, 'restoreCategory'])->name('trash.categories.restore');
   Route::delete('/trash/categories/{id}/force-delete', [AdminTrashController::class, 'forceDeleteCategory'])->name('trash.categories.force-delete');
 
+  Route::post('/products/bulk-delete', [AdminProductController::class, 'bulkDelete'])->name('products.bulk-delete');
   Route::resource('products', AdminProductController::class);
   Route::post('/products/{id}/restore', [AdminProductController::class, 'restore'])->name('products.restore');
   Route::delete('/products/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('products.force-delete');

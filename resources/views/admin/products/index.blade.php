@@ -19,10 +19,27 @@
     <!-- Products Table Card -->
     <div class="card bg-base-100 shadow-lg">
         <div class="card-body p-0">
+            <!-- Form phục vụ Bulk Action -->
+            <form id="bulk-delete-form" action="{{ route('admin.products.bulk-delete') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+
+            <!-- Bulk Actions Bar -->
+            <div id="bulk-actions-bar" class="hidden flex items-center justify-between p-4 bg-base-200 border-b border-base-300">
+                <span class="text-sm font-semibold">Đã chọn <span id="selected-count" class="font-bold text-primary">0</span> sản phẩm</span>
+                <button type="submit" form="bulk-delete-form" class="btn btn-error btn-sm gap-2" onclick="return confirm('Bạn có chắc chắn muốn xóa các sản phẩm đã chọn?')">
+                    <x-heroicon-o-trash class="w-4 h-4" />
+                    Xóa các mục đã chọn
+                </button>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="table table-zebra table-xs sm:table-sm lg:table-md w-full">
                     <thead>
                         <tr class="bg-base-200 hover:bg-base-200">
+                            <th class="w-10 text-center">
+                                <input type="checkbox" id="select-all-products" class="checkbox checkbox-sm">
+                            </th>
                             <th class="font-bold">ID</th>
                             <th class="font-bold w-20">Hình ảnh</th>
                             <th class="font-bold">Tên sản phẩm</th>
@@ -35,6 +52,9 @@
                     <tbody>
                         @forelse($products as $product)
                             <tr class="hover:bg-base-200 transition">
+                                <td class="text-center">
+                                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="checkbox checkbox-sm product-checkbox" form="bulk-delete-form">
+                                </td>
                                 <td class="font-medium">{{ $product->id }}</td>
                                 <td>
                                     @if($product->image)
@@ -102,7 +122,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-12">
+                                <td colspan="8" class="text-center py-12">
                                     <div class="flex flex-col items-center gap-3">
                                         <x-heroicon-o-inbox class="w-12 h-12 text-base-300" />
                                         <div>
@@ -129,6 +149,42 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('select-all-products');
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    const bulkBar = document.getElementById('bulk-actions-bar');
+    const selectedCount = document.getElementById('selected-count');
+
+    function updateBulkBar() {
+        const checked = document.querySelectorAll('.product-checkbox:checked');
+        const count = checked.length;
+        if (selectedCount) selectedCount.textContent = count;
+        if (bulkBar) {
+            if (count > 0) {
+                bulkBar.classList.remove('hidden');
+            } else {
+                bulkBar.classList.add('hidden');
+            }
+        }
+        if (selectAll) {
+            selectAll.checked = checkboxes.length > 0 && count === checkboxes.length;
+        }
+    }
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateBulkBar();
+        });
+    }
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkBar);
+    });
+});
+</script>
 
 <style>
     .table-xs tr td {
