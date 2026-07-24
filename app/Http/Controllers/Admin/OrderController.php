@@ -11,12 +11,46 @@ class OrderController extends Controller
     /**
      * Display a listing of the orders.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['user', 'shipment', 'latestPayment'])
-            ->orderBy('created_at', 'desc')
+        $query = Order::with(['user', 'shipment', 'latestPayment']);
+
+        // Filter by order number
+        if ($request->filled('order_number')) {
+            $query->where('order_number', 'like', '%' . $request->order_number . '%');
+        }
+
+        // Filter by customer name or email (both member and guest)
+        if ($request->filled('customer')) {
+            $keyword = '%' . $request->customer . '%';
+            $query->where(function ($q) use ($keyword) {
+                $q->whereHas('user', function ($q) use ($keyword) {
+                    $q->where('name', 'like', $keyword)
+                      ->orWhere('email', 'like', $keyword);
+                })
+                ->orWhere('guest_name', 'like', $keyword)
+                ->orWhere('guest_email', 'like', $keyword);
+            });
+        }
+
+        // Filter by order status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
-            ->paginate(15);
+            ->paginate(15)
+            ->appends($request->only(['order_number', 'customer', 'status', 'date_from', 'date_to']));
 
         return view('admin.orders.index', compact('orders'));
     }

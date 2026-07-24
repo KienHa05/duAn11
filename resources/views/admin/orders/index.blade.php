@@ -12,6 +12,62 @@
         </div>
     </div>
 
+    <!-- Filter Section -->
+    <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.orders.index') }}" class="flex flex-wrap items-end gap-3">
+                <div class="form-control min-w-[160px] flex-1">
+                    <label class="label py-1">
+                        <span class="label-text text-xs">Mã đơn hàng</span>
+                    </label>
+                    <input type="text" name="order_number" value="{{ request('order_number') }}"
+                           class="input input-bordered input-sm" placeholder="ORD...">
+                </div>
+                <div class="form-control min-w-[200px] flex-1">
+                    <label class="label py-1">
+                        <span class="label-text text-xs">Khách hàng / Email</span>
+                    </label>
+                    <input type="text" name="customer" value="{{ request('customer') }}"
+                           class="input input-bordered input-sm" placeholder="Tên hoặc email...">
+                </div>
+                <div class="form-control min-w-[150px] flex-1">
+                    <label class="label py-1">
+                        <span class="label-text text-xs">Trạng thái</span>
+                    </label>
+                    <select name="status" class="select select-bordered select-sm">
+                        <option value="">Tất cả</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
+                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
+                        <option value="shipping" {{ request('status') == 'shipping' ? 'selected' : '' }}>Đang giao</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn tất</option>
+                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                        <option value="returned" {{ request('status') == 'returned' ? 'selected' : '' }}>Trả hàng</option>
+                    </select>
+                </div>
+                <div class="form-control min-w-[140px]">
+                    <label class="label py-1">
+                        <span class="label-text text-xs">Từ ngày</span>
+                    </label>
+                    <input type="date" name="date_from" value="{{ request('date_from') }}"
+                           class="input input-bordered input-sm">
+                </div>
+                <div class="form-control min-w-[140px]">
+                    <label class="label py-1">
+                        <span class="label-text text-xs">Đến ngày</span>
+                    </label>
+                    <input type="date" name="date_to" value="{{ request('date_to') }}"
+                           class="input input-bordered input-sm">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm">Lọc</button>
+                    @if(request()->anyFilled(['order_number', 'customer', 'status', 'date_from', 'date_to']))
+                        <a href="{{ route('admin.orders.index') }}" class="btn btn-ghost btn-sm">Xóa lọc</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Orders Table Card -->
     <div class="card bg-base-100 shadow-lg">
         <div class="card-body p-0">
@@ -89,11 +145,18 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-8">
+                                <td colspan="8" class="text-center py-8">
                                     <div class="flex flex-col items-center gap-3">
                                         <x-heroicon-o-inbox class="w-12 h-12 text-base-300" />
-                                        <p class="text-base-content/60 font-medium">Chưa có đơn hàng nào</p>
-                                        <p class="text-sm text-base-content/50">Đơn hàng sẽ xuất hiện tại đây khi khách hàng đặt</p>
+                                        @if(request()->anyFilled(['order_number', 'customer', 'status', 'date_from', 'date_to']))
+                                            <p class="text-base-content/60 font-medium">Không tìm thấy đơn hàng phù hợp</p>
+                                            <p class="text-sm text-base-content/50">Thử thay đổi điều kiện lọc hoặc 
+                                                <a href="{{ route('admin.orders.index') }}" class="link link-primary">xóa bộ lọc</a>
+                                            </p>
+                                        @else
+                                            <p class="text-base-content/60 font-medium">Chưa có đơn hàng nào</p>
+                                            <p class="text-sm text-base-content/50">Đơn hàng sẽ xuất hiện tại đây khi khách hàng đặt</p>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
