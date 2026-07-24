@@ -28,10 +28,27 @@
                 </form>
             </div>
 
+            <!-- Form phục vụ Bulk Restore sản phẩm -->
+            <form id="bulk-restore-products-form" action="{{ route('admin.trash.products.bulk-restore') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+
+            <!-- Bulk Actions Bar cho sản phẩm đã xóa -->
+            <div id="bulk-products-bar" class="hidden flex items-center justify-between p-4 mb-4 bg-base-200 rounded-lg border border-base-300">
+                <span class="text-sm font-semibold">Đã chọn <span id="selected-products-count" class="font-bold text-primary">0</span> sản phẩm</span>
+                <button type="submit" form="bulk-restore-products-form" class="btn btn-success btn-sm gap-2">
+                    <x-heroicon-o-arrow-path class="w-4 h-4" />
+                    Khôi phục các mục đã chọn
+                </button>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="table table-zebra table-xs sm:table-sm lg:table-md w-full">
                     <thead>
                         <tr class="bg-base-200 hover:bg-base-200">
+                            <th class="w-10 text-center">
+                                <input type="checkbox" id="select-all-trash-products" class="checkbox checkbox-sm">
+                            </th>
                             <th class="font-bold">ID</th>
                             <th class="font-bold">Tên</th>
                             <th class="font-bold">Ngày xóa</th>
@@ -41,6 +58,9 @@
                     <tbody>
                         @forelse($products as $product)
                             <tr class="hover:bg-base-200 transition">
+                                <td class="text-center">
+                                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="checkbox checkbox-sm trash-product-checkbox" form="bulk-restore-products-form">
+                                </td>
                                 <td class="font-medium">{{ $product->id }}</td>
                                 <td><div class="font-semibold text-base-content">{{ $product->name }}</div></td>
                                 <td class="text-sm text-base-content/70">{{ $product->deleted_at->format('d/m/Y H:i') }}</td>
@@ -73,7 +93,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-8">
+                                <td colspan="5" class="text-center py-8">
                                     <div class="flex flex-col items-center gap-3">
                                         <x-heroicon-o-inbox class="w-12 h-12 text-base-300" />
                                         <p class="text-base-content/60 font-medium">Không có sản phẩm đã xóa</p>
@@ -166,4 +186,40 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllProducts = document.getElementById('select-all-trash-products');
+    const productCheckboxes = document.querySelectorAll('.trash-product-checkbox');
+    const bulkProductsBar = document.getElementById('bulk-products-bar');
+    const selectedProductsCount = document.getElementById('selected-products-count');
+
+    function updateProductsBulkBar() {
+        const checked = document.querySelectorAll('.trash-product-checkbox:checked');
+        const count = checked.length;
+        if (selectedProductsCount) selectedProductsCount.textContent = count;
+        if (bulkProductsBar) {
+            if (count > 0) {
+                bulkProductsBar.classList.remove('hidden');
+            } else {
+                bulkProductsBar.classList.add('hidden');
+            }
+        }
+        if (selectAllProducts) {
+            selectAllProducts.checked = productCheckboxes.length > 0 && count === productCheckboxes.length;
+        }
+    }
+
+    if (selectAllProducts) {
+        selectAllProducts.addEventListener('change', function() {
+            productCheckboxes.forEach(cb => cb.checked = selectAllProducts.checked);
+            updateProductsBulkBar();
+        });
+    }
+
+    productCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateProductsBulkBar);
+    });
+});
+</script>
 @endsection

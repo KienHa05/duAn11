@@ -44,6 +44,23 @@ class TrashController extends Controller
             ->with('success', "Sản phẩm \"$product->name\" đã được khôi phục!");
     }
 
+    public function bulkRestoreProducts(Request $request)
+    {
+        $productIds = $request->input('product_ids', []);
+
+        if (empty($productIds) || !is_array($productIds)) {
+            return back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm.');
+        }
+
+        $count = Product::onlyTrashed()->whereIn('id', $productIds)->restore();
+
+        if ($count > 0) {
+            return back()->with('success', "Đã khôi phục thành công $count sản phẩm!");
+        }
+
+        return back()->with('error', 'Không tìm thấy sản phẩm hợp lệ để khôi phục.');
+    }
+
     public function forceDeleteProduct(int $id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);

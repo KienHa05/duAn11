@@ -98,6 +98,26 @@ class ProductController extends Controller
     }
 
     /**
+     * Soft delete multiple products
+     */
+    public function bulkDelete(Request $request)
+    {
+        $productIds = $request->input('product_ids', []);
+
+        if (empty($productIds) || !is_array($productIds)) {
+            return back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm.');
+        }
+
+        $count = Product::whereIn('id', $productIds)->delete();
+
+        if ($count > 0) {
+            return back()->with('success', "Đã xóa thành công $count sản phẩm!");
+        }
+
+        return back()->with('error', 'Không tìm thấy sản phẩm hợp lệ để xóa.');
+    }
+
+    /**
      * Restore a soft-deleted product
      */
     public function restore($id)
