@@ -35,12 +35,69 @@ class AnalyticsController extends Controller
             'categories' => \App\Models\Category::count(),
             'users' => \App\Models\User::count(),
             'orders' => Order::count(),
+            'customers' => \App\Models\User::where('is_admin', false)->count(),
+            'total_revenue' => (int) Order::where('payment_status', 'paid')->sum('total_amount'),
+        ];
+
+        $statusCounts = Order::selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $orderStatusStats = [
+            'pending' => $statusCounts['pending'] ?? 0,
+            'confirmed' => $statusCounts['confirmed'] ?? 0,
+            'shipping' => $statusCounts['shipping'] ?? 0,
+            'completed' => $statusCounts['completed'] ?? 0,
+            'cancelled' => $statusCounts['cancelled'] ?? 0,
+            'returned' => $statusCounts['returned'] ?? 0,
+        ];
+
+        $driver = DB::getDriverName();
+        $monthExpression = ($driver === 'sqlite')
+            ? "strftime('%m', created_at) as month"
+            : "MONTH(created_at) as month";
+        $yearCondition = ($driver === 'sqlite')
+            ? "strftime('%Y', created_at) = ?"
+            : "YEAR(created_at) = ?";
+        $currentYear = now()->year;
+
+        $monthlyRevenue = DB::table('orders')
+            ->where('payment_status', 'paid')
+            ->whereRaw($yearCondition, [$currentYear])
+            ->select(DB::raw($monthExpression), DB::raw('SUM(total_amount) as revenue'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('revenue', 'month');
+
+        $monthlyOrders = DB::table('orders')
+            ->whereRaw($yearCondition, [$currentYear])
+            ->select(DB::raw($monthExpression), DB::raw('COUNT(*) as total'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month');
+
+        $monthLabels = ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'];
+        $revenueData = [];
+        $ordersData = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $revenueData[] = (int) ($monthlyRevenue[$m] ?? 0);
+            $ordersData[] = (int) ($monthlyOrders[$m] ?? 0);
+        }
+
+        $monthlyChartData = [
+            'labels' => $monthLabels,
+            'revenue' => $revenueData,
+            'orders' => $ordersData,
+            'year' => $currentYear,
         ];
 
         return view('admin.analytics', [
             'kpis' => $kpis,
             'overview' => $overview,
-            'today' => $today
+            'orderStatusStats' => $orderStatusStats,
+            'monthlyChartData' => $monthlyChartData,
+            'today' => $today,
         ]);
     }
 
