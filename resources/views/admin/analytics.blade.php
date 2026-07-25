@@ -125,7 +125,7 @@
     {{-- System Overview Section --}}
     <div class="space-y-4">
         <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400">Chỉ số nền tảng</h3>
-        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             <div class="ent-card p-5 group">
                 <div class="flex items-start justify-between">
                     <div class="space-y-1">
@@ -162,11 +162,33 @@
             <div class="ent-card p-5 group">
                 <div class="flex items-start justify-between">
                     <div class="space-y-1">
+                        <p class="ent-stat-label">Khách hàng</p>
+                        <p class="ent-stat-value">{{ number_format($overview['customers']) }}</p>
+                    </div>
+                    <div class="ent-icon-wrapper text-cyan-600 group-hover:bg-cyan-50">
+                        <x-heroicon-o-user-group class="w-5 h-5" />
+                    </div>
+                </div>
+            </div>
+            <div class="ent-card p-5 group">
+                <div class="flex items-start justify-between">
+                    <div class="space-y-1">
                         <p class="ent-stat-label">Tổng đơn hàng</p>
                         <p class="ent-stat-value">{{ number_format($overview['orders']) }}</p>
                     </div>
                     <div class="ent-icon-wrapper text-orange-600 group-hover:bg-orange-50">
                         <x-heroicon-o-shopping-bag class="w-5 h-5" />
+                    </div>
+                </div>
+            </div>
+            <div class="ent-card p-5 group">
+                <div class="flex items-start justify-between">
+                    <div class="space-y-1">
+                        <p class="ent-stat-label">Tổng doanh thu</p>
+                        <p class="ent-stat-value">{{ number_format($overview['total_revenue']) }}₫</p>
+                    </div>
+                    <div class="ent-icon-wrapper text-rose-600 group-hover:bg-rose-50">
+                        <x-heroicon-o-banknotes class="w-5 h-5" />
                     </div>
                 </div>
             </div>
@@ -224,11 +246,44 @@
         </div>
     </div>
 
+    {{-- Orders by Status Section --}}
+    <div class="space-y-4">
+        <div class="flex items-end justify-between gap-3">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400">Đơn hàng theo trạng thái</h3>
+            <p class="text-sm text-base-content/60">Phân bổ tất cả đơn hàng trong hệ thống.</p>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            @php
+                $statusConfig = [
+                    'pending' => ['label' => 'Chờ xác nhận', 'color' => 'bg-yellow-50/70', 'border' => 'border-yellow-200/50', 'text' => 'text-yellow-700/80', 'icon' => 'heroicon-o-clock'],
+                    'confirmed' => ['label' => 'Đã xác nhận', 'color' => 'bg-blue-50/70', 'border' => 'border-blue-200/50', 'text' => 'text-blue-700/80', 'icon' => 'heroicon-o-check-circle'],
+                    'shipping' => ['label' => 'Đang giao', 'color' => 'bg-sky-50/70', 'border' => 'border-sky-200/50', 'text' => 'text-sky-700/80', 'icon' => 'heroicon-o-truck'],
+                    'completed' => ['label' => 'Hoàn tất', 'color' => 'bg-emerald-50/70', 'border' => 'border-emerald-200/50', 'text' => 'text-emerald-700/80', 'icon' => 'heroicon-o-check-badge'],
+                    'cancelled' => ['label' => 'Đã hủy', 'color' => 'bg-red-50/70', 'border' => 'border-red-200/50', 'text' => 'text-red-700/80', 'icon' => 'heroicon-o-x-circle'],
+                    'returned' => ['label' => 'Trả hàng', 'color' => 'bg-purple-50/70', 'border' => 'border-purple-200/50', 'text' => 'text-purple-700/80', 'icon' => 'heroicon-o-arrow-uturn-left'],
+                ];
+            @endphp
+            @foreach($statusConfig as $key => $cfg)
+                <div class="ent-card p-4 {{ $cfg['color'] }} {{ $cfg['border'] }}">
+                    <div class="flex items-center gap-3">
+                        <div class="rounded-xl bg-white/70 p-2.5 shadow-sm {{ $cfg['text'] }}">
+                            <x-dynamic-component :component="$cfg['icon']" class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-wide {{ $cfg['text'] }}">{{ $cfg['label'] }}</p>
+                            <p class="text-xl font-extrabold text-slate-900 mt-0.5">{{ number_format($orderStatusStats[$key]) }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
     {{-- Main Trend Chart --}}
     <div class="ent-card overflow-hidden">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-bold text-slate-9 slate-900">Xu hướng Tăng trưởng</h2>
+                <h2 class="text-lg font-bold text-slate-900">Xu hướng Tăng trưởng</h2>
                 <p class="text-xs font-semibold text-slate-400">Phân tích tương quan giữa doanh thu và đơn hàng theo thời gian</p>
             </div>
             <div class="chart-loading hidden text-blue-600"><span class="loading loading-spinner loading-xs mr-2"></span><span class="text-[10px] font-bold uppercase tracking-widest">Đang tải...</span></div>
@@ -278,9 +333,72 @@
             </div>
         </div>
     </div>
+
+    {{-- Monthly Statistics --}}
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="ent-card">
+            <div class="p-6 border-b border-slate-100">
+                <h2 class="text-lg font-bold text-slate-900">Doanh thu theo tháng</h2>
+                <p class="text-xs font-semibold text-slate-400 mt-0.5">Năm {{ $monthlyChartData['year'] }}</p>
+            </div>
+            <div class="p-6">
+                <div class="min-h-[300px]" id="chart-monthly-revenue"></div>
+            </div>
+        </div>
+        <div class="ent-card">
+            <div class="p-6 border-b border-slate-100">
+                <h2 class="text-lg font-bold text-slate-900">Đơn hàng theo tháng</h2>
+                <p class="text-xs font-semibold text-slate-400 mt-0.5">Năm {{ $monthlyChartData['year'] }}</p>
+            </div>
+            <div class="p-6">
+                <div class="min-h-[300px]" id="chart-monthly-orders"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
 <script src="{{ asset('js/admin/dashboard-charts.js') }}"></script>
+<script>
+    var monthlyChartData = @json($monthlyChartData);
+
+    function renderMonthlyCharts() {
+        if (typeof ApexCharts === 'undefined') return;
+
+        var baseChart = {
+            animations: { enabled: false },
+            dataLabels: { enabled: false },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
+        };
+
+        new ApexCharts(document.querySelector('#chart-monthly-revenue'), {
+            ...baseChart,
+            chart: { type: 'bar', height: 300, width: '100%', toolbar: { show: false }, fontFamily: 'Inter, system-ui, sans-serif', redrawOnParentResize: true, redrawOnWindowResize: true },
+            series: [{ name: 'Doanh thu', data: monthlyChartData.revenue }],
+            colors: ['#2563eb'],
+            plotOptions: { bar: { borderRadius: 2, columnWidth: '60%', dataLabels: { position: 'top' } } },
+            xaxis: { categories: monthlyChartData.labels, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontWeight: 600 } } },
+            yaxis: { labels: { formatter: function (val) { return new Intl.NumberFormat('vi-VN', { notation: 'compact' }).format(val); }, style: { fontWeight: 600 } } },
+            tooltip: { y: { formatter: function (val) { return new Intl.NumberFormat('vi-VN').format(val) + '₫'; } } },
+            legend: { show: false },
+        }).render();
+
+        new ApexCharts(document.querySelector('#chart-monthly-orders'), {
+            ...baseChart,
+            chart: { type: 'bar', height: 300, width: '100%', toolbar: { show: false }, fontFamily: 'Inter, system-ui, sans-serif', redrawOnParentResize: true, redrawOnWindowResize: true },
+            series: [{ name: 'Đơn hàng', data: monthlyChartData.orders }],
+            colors: ['#10b981'],
+            plotOptions: { bar: { borderRadius: 2, columnWidth: '60%', dataLabels: { position: 'top' } } },
+            xaxis: { categories: monthlyChartData.labels, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { fontWeight: 600 } } },
+            yaxis: { labels: { formatter: function (val) { return Math.round(val); }, style: { fontWeight: 600 } } },
+            tooltip: { y: { formatter: function (val) { return Math.round(val) + ' đơn'; } } },
+            legend: { show: false },
+        }).render();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(renderMonthlyCharts, 700);
+    });
+</script>
 @endpush
 @endsection
